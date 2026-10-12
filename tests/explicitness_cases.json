@@ -1,0 +1,3531 @@
+[
+  {
+    "id": "control",
+    "language": "python",
+    "suffix": ".py",
+    "source": "def add(left, right):\n    return left + right\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "spread",
+    "language": "python",
+    "suffix": ".py",
+    "source": "def leaf(value):\n    print(value)\ndef wrapper(value):\n    leaf(value)\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "wrapper"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "leaf": [
+        "ImplicitOutput"
+      ],
+      "wrapper": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "injected",
+    "language": "python",
+    "suffix": ".py",
+    "source": "def send(value, notify):\n    notify(value)\n    return value\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "id": "uppercase",
+    "language": "python",
+    "suffix": ".py",
+    "source": "CACHE = []\ndef change(value):\n    CACHE.append(value)\ndef read():\n    return len(CACHE)\n",
+    "exit": 2,
+    "present": [
+      "ImplicitInput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "read": [
+        "ImplicitInput"
+      ]
+    }
+  },
+  {
+    "id": "capture",
+    "language": "python",
+    "suffix": ".py",
+    "source": "def make_adder(start):\n    return lambda value: start + value\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "alias",
+    "language": "python",
+    "suffix": ".py",
+    "source": "def change(values):\n    alias = values\n    alias.append(1)\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "late_rebind",
+    "language": "python",
+    "suffix": ".py",
+    "source": "def change(values):\n    values.append(1)\n    values = []\n    return values\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "copy",
+    "language": "python",
+    "suffix": ".py",
+    "source": "def change(values):\n    values = list(values)\n    values.append(1)\n    return values\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "direct_mutation",
+    "language": "python",
+    "suffix": ".py",
+    "source": "def change(values):\n    values.append(1)\n    return values\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "control",
+    "language": "typescript",
+    "suffix": ".ts",
+    "source": "function add(left: number, right: number) { return left + right; }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "spread",
+    "language": "typescript",
+    "suffix": ".ts",
+    "source": "function leaf(value: number) { console.log(value); }\nfunction wrapper(value: number) { leaf(value); }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "wrapper"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "leaf": [
+        "ImplicitOutput"
+      ],
+      "wrapper": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "injected",
+    "language": "typescript",
+    "suffix": ".ts",
+    "source": "function send(value: number, notify: (value: number) => void) { notify(value); return value; }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "id": "capture",
+    "language": "typescript",
+    "suffix": ".ts",
+    "source": "function makeAdder(start: number) { return (value: number) => start + value; }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "alias",
+    "language": "typescript",
+    "suffix": ".ts",
+    "source": "function change(values: number[]) { const alias = values; alias.push(1); }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "copy",
+    "language": "typescript",
+    "suffix": ".ts",
+    "source": "function change(values: number[]) { values = [...values]; values.push(1); return values; }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "direct_mutation",
+    "language": "typescript",
+    "suffix": ".ts",
+    "source": "function change(values: number[]) { values.push(1); return values; }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "control",
+    "language": "go",
+    "suffix": ".go",
+    "source": "package probe\nfunc Add(left, right int) int { return left + right }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "spread",
+    "language": "go",
+    "suffix": ".go",
+    "source": "package probe\nimport \"fmt\"\nfunc Leaf(value int) { fmt.Println(value) }\nfunc Wrapper(value int) { Leaf(value) }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "Wrapper"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Leaf": [
+        "ImplicitOutput"
+      ],
+      "Wrapper": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "injected",
+    "language": "go",
+    "suffix": ".go",
+    "source": "package probe\nfunc Send(value int, notify func(int)) int { notify(value); return value }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "id": "capture",
+    "language": "go",
+    "suffix": ".go",
+    "source": "package probe\nfunc MakeAdder(start int) func(int) int { return func(value int) int { return start + value } }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "factory",
+    "language": "go",
+    "suffix": ".go",
+    "source": "package probe\nimport \"fmt\"\nfunc Build() func() { return func() { fmt.Println(1) } }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "<lambda>"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "Build"
+    ]
+  },
+  {
+    "id": "alias",
+    "language": "go",
+    "suffix": ".go",
+    "source": "package probe\nfunc Change(values []int) { alias := values; alias[0] = 1 }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "copy",
+    "language": "go",
+    "suffix": ".go",
+    "source": "package probe\nimport \"slices\"\nfunc Change(values []int) []int { values = slices.Clone(values); slices.Sort(values); return values }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "direct_mutation",
+    "language": "go",
+    "suffix": ".go",
+    "source": "package probe\nfunc Change(values []int) { values[0] = 1 }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "control",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet add left right = left + right\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "spread",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet leaf value = printfn \"%d\" value\nlet wrapper value = leaf value\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "wrapper"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "leaf": [
+        "ImplicitOutput"
+      ],
+      "wrapper": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "injected",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet send value notify = notify value; value\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "id": "capture",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet makeAdder start = fun value -> start + value\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "array_read",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet items = [| 0 |]\nlet change value = items.[0] <- value\nlet read () = items.[0]\n",
+    "exit": 2,
+    "present": [
+      "ImplicitInput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "read": [
+        "ImplicitInput"
+      ]
+    }
+  },
+  {
+    "id": "factory",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet build () = fun () -> printfn \"%d\" 1\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "<lambda>"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "build"
+    ]
+  },
+  {
+    "id": "alias",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet change (values: int array) =\n    let alias = values\n    alias.[0] <- 1\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "copy",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet change (values: int array) =\n    let next = Array.copy values\n    next.[0] <- 1\n    next\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "direct_mutation",
+    "language": "fsharp",
+    "suffix": ".fs",
+    "source": "module Probe\nlet change (values: int array) = values.[0] <- 1\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "control",
+    "language": "csharp",
+    "suffix": ".cs",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { public static int Add(int left, int right) => left + right; }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "direct_mutation",
+    "language": "csharp",
+    "suffix": ".cs",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { public static bool Change(System.Collections.Generic.List<int> values) => values.Remove(1); }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "shared_read",
+    "language": "csharp",
+    "suffix": ".cs",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static readonly int[] Values = new int[] { 0 }; public static void Change(int value) { Values[0] = value; } public static int Read() => Values[0]; }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitInput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Read": [
+        "ImplicitInput"
+      ]
+    }
+  },
+  {
+    "id": "copy",
+    "language": "csharp",
+    "suffix": ".cs",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { public static int[] Change(int[] values) { var next = (int[]) values.Clone(); next[0] = 1; return next; } }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "injected",
+    "language": "csharp",
+    "suffix": ".cs",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { public static void Send(int value, System.Action<int> notify) { notify(value); } }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "id": "control",
+    "language": "rust",
+    "suffix": ".rs",
+    "source": "fn add(left: i32, right: i32) -> i32 { left + right }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "direct_mutation",
+    "language": "rust",
+    "suffix": ".rs",
+    "source": "fn change(values: &mut Vec<i32>) { values.push(1); }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "id": "capability",
+    "language": "rust",
+    "suffix": ".rs",
+    "source": "fn nothing(_value: &mut i32) {}\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "copy",
+    "language": "rust",
+    "suffix": ".rs",
+    "source": "fn change(values: &[i32]) -> Vec<i32> { let mut next = values.to_vec(); next.push(1); next }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "id": "injected",
+    "language": "rust",
+    "suffix": ".rs",
+    "source": "fn send(value: i32, notify: fn(i32)) { notify(value); }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "python",
+    "id": "opaque_call",
+    "semantic": "A call outside the analyzed effect graph is unknown.",
+    "source": "import thirdparty\ndef action(value):\n    return thirdparty.process(value)\n",
+    "suffix": ".py",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "action": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "python",
+    "id": "shallow_copy",
+    "semantic": "A fresh outer container does not detach the shared objects in its elements.",
+    "source": "def change(values):\n    next = list(values)\n    next[0].append(1)\n",
+    "suffix": ".py",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "typescript",
+    "id": "opaque_call",
+    "semantic": "A call outside the analyzed effect graph is unknown.",
+    "source": "import { process } from \"./thirdparty\";\nfunction action(value: number) { return process(value); }\n",
+    "suffix": ".ts",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "action": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "typescript",
+    "id": "shallow_copy",
+    "semantic": "A fresh outer container does not detach the shared objects in its elements.",
+    "source": "function change(values: { n: number }[]) { const next = [...values]; next[0].n = 1; }\n",
+    "suffix": ".ts",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "go",
+    "id": "opaque_call",
+    "semantic": "A call outside the analyzed effect graph is unknown.",
+    "source": "package probe\nimport \"thirdparty\"\nfunc Action(value int) int { return thirdparty.Process(value) }\n",
+    "suffix": ".go",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Action": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "go",
+    "id": "shallow_copy",
+    "semantic": "A fresh outer container does not detach the shared objects in its elements.",
+    "source": "package probe\nimport \"slices\"\nfunc Change(values []*int) { next := slices.Clone(values); *next[0] = 1 }\n",
+    "suffix": ".go",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "fsharp",
+    "id": "opaque_call",
+    "semantic": "A call outside the analyzed effect graph is unknown.",
+    "source": "module Probe\nlet action value = ThirdParty.process value\n",
+    "suffix": ".fs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "action": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "fsharp",
+    "id": "shallow_copy",
+    "semantic": "A fresh outer container does not detach the shared objects in its elements.",
+    "source": "module Probe\nlet change (values: int ref array) =\n    let next = Array.copy values\n    next.[0].Value <- 1\n",
+    "suffix": ".fs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "csharp",
+    "id": "opaque_call",
+    "semantic": "A call outside the analyzed effect graph is unknown.",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static int Action(int value) => ThirdParty.Process(value); }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Action": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "csharp",
+    "id": "shallow_copy",
+    "semantic": "A fresh outer container does not detach the shared objects in its elements.",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static void Change(List<List<int>> values) { var next = new List<List<int>>(values); next[0].Add(1); } }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "rust",
+    "id": "opaque_call",
+    "semantic": "A call outside the analyzed effect graph is unknown.",
+    "source": "fn action(value: i32) -> i32 { thirdparty::process(value) }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "action": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "rust",
+    "id": "shallow_copy",
+    "semantic": "A fresh outer container does not detach the shared objects in its elements.",
+    "source": "use std::rc::Rc;\nuse std::cell::RefCell;\nfn change(values: &[Rc<RefCell<i32>>]) { let next = values.to_vec(); *next[0].borrow_mut() = 1; }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "python",
+    "id": "pure_helper",
+    "semantic": "pure helper",
+    "source": "def leaf(value):\n    return value + 1\ndef wrapper(value):\n    return leaf(value)\n",
+    "suffix": ".py",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "python",
+    "id": "recursive_calculation",
+    "semantic": "recursive calculation",
+    "source": "def loop(value):\n    return 0 if value <= 0 else loop(value - 1)\n",
+    "suffix": ".py",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "python",
+    "id": "unknown_spread",
+    "semantic": "unknown spread",
+    "source": "def leaf(value, notify):\n    return notify(value)\ndef wrapper(value, notify):\n    return leaf(value, notify)\n",
+    "suffix": ".py",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "UnknownEffect": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "leaf": [
+        "UnknownEffect"
+      ],
+      "wrapper": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "python",
+    "id": "shadowed_callable",
+    "semantic": "shadowed callable",
+    "source": "def helper(value):\n    return value + 1\ndef send(value, helper):\n    return helper(value)\n",
+    "suffix": ".py",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "python",
+    "id": "action_and_unknown",
+    "semantic": "action and unknown",
+    "source": "def send(value, notify):\n    print(value)\n    notify(value)\n",
+    "suffix": ".py",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "send": [
+        "ImplicitOutput",
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "typescript",
+    "id": "pure_helper",
+    "semantic": "pure helper",
+    "source": "function leaf(value: number) { return value + 1; }\nfunction wrapper(value: number) { return leaf(value); }\n",
+    "suffix": ".ts",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "typescript",
+    "id": "recursive_calculation",
+    "semantic": "recursive calculation",
+    "source": "function loop(value: number): number { return value <= 0 ? 0 : loop(value - 1); }\n",
+    "suffix": ".ts",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "typescript",
+    "id": "unknown_spread",
+    "semantic": "unknown spread",
+    "source": "function leaf(value: number, notify: (value: number) => number) { return notify(value); }\nfunction wrapper(value: number, notify: (value: number) => number) { return leaf(value, notify); }\n",
+    "suffix": ".ts",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "UnknownEffect": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "leaf": [
+        "UnknownEffect"
+      ],
+      "wrapper": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "typescript",
+    "id": "shadowed_callable",
+    "semantic": "shadowed callable",
+    "source": "function helper(value: number) { return value + 1; }\nfunction send(value: number, helper: (value: number) => number) { return helper(value); }\n",
+    "suffix": ".ts",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "typescript",
+    "id": "action_and_unknown",
+    "semantic": "action and unknown",
+    "source": "function send(value: number, notify: (value: number) => void) { console.log(value); notify(value); }\n",
+    "suffix": ".ts",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "send": [
+        "ImplicitOutput",
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "go",
+    "id": "pure_helper",
+    "semantic": "pure helper",
+    "source": "package probe\nfunc Leaf(value int) int { return value + 1 }\nfunc Wrapper(value int) int { return Leaf(value) }\n",
+    "suffix": ".go",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "go",
+    "id": "recursive_calculation",
+    "semantic": "recursive calculation",
+    "source": "package probe\nfunc Loop(value int) int { if value <= 0 { return 0 }; return Loop(value - 1) }\n",
+    "suffix": ".go",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "go",
+    "id": "unknown_spread",
+    "semantic": "unknown spread",
+    "source": "package probe\nfunc Leaf(value int, notify func(int) int) int { return notify(value) }\nfunc Wrapper(value int, notify func(int) int) int { return Leaf(value, notify) }\n",
+    "suffix": ".go",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "UnknownEffect": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Leaf": [
+        "UnknownEffect"
+      ],
+      "Wrapper": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "go",
+    "id": "shadowed_callable",
+    "semantic": "shadowed callable",
+    "source": "package probe\nfunc Helper(value int) int { return value + 1 }\nfunc Send(value int, Helper func(int) int) int { return Helper(value) }\n",
+    "suffix": ".go",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "go",
+    "id": "action_and_unknown",
+    "semantic": "action and unknown",
+    "source": "package probe\nimport \"fmt\"\nfunc Send(value int, notify func(int)) { fmt.Println(value); notify(value) }\n",
+    "suffix": ".go",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Send": [
+        "ImplicitOutput",
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "fsharp",
+    "id": "pure_helper",
+    "semantic": "pure helper",
+    "source": "module Probe\nlet leaf value = value + 1\nlet wrapper value = leaf value\n",
+    "suffix": ".fs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "fsharp",
+    "id": "recursive_calculation",
+    "semantic": "recursive calculation",
+    "source": "module Probe\nlet rec loop value = if value <= 0 then 0 else loop (value - 1)\n",
+    "suffix": ".fs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "fsharp",
+    "id": "unknown_spread",
+    "semantic": "unknown spread",
+    "source": "module Probe\nlet leaf value notify = notify value\nlet wrapper value notify = leaf value notify\n",
+    "suffix": ".fs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "UnknownEffect": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "leaf": [
+        "UnknownEffect"
+      ],
+      "wrapper": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "fsharp",
+    "id": "shadowed_callable",
+    "semantic": "shadowed callable",
+    "source": "module Probe\nlet helper value = value + 1\nlet send value helper = helper value\n",
+    "suffix": ".fs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "fsharp",
+    "id": "action_and_unknown",
+    "semantic": "action and unknown",
+    "source": "module Probe\nlet send value notify = printfn \"%d\" value; notify value\n",
+    "suffix": ".fs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "send": [
+        "ImplicitOutput",
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "csharp",
+    "id": "pure_helper",
+    "semantic": "pure helper",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static int Leaf(int value) => value + 1; static int Wrapper(int value) => Leaf(value); }\n",
+    "suffix": ".cs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "csharp",
+    "id": "recursive_calculation",
+    "semantic": "recursive calculation",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static int Loop(int value) => value <= 0 ? 0 : Loop(value - 1); }\n",
+    "suffix": ".cs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "csharp",
+    "id": "unknown_spread",
+    "semantic": "unknown spread",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static int Leaf(int value, Func<int, int> notify) => notify(value); static int Wrapper(int value, Func<int, int> notify) => Leaf(value, notify); }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "UnknownEffect": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Leaf": [
+        "UnknownEffect"
+      ],
+      "Wrapper": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "csharp",
+    "id": "shadowed_callable",
+    "semantic": "shadowed callable",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static int Helper(int value) => value + 1; static int Send(int value, Func<int, int> Helper) => Helper(value); }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "csharp",
+    "id": "action_and_unknown",
+    "semantic": "action and unknown",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static void Send(int value, Action<int> notify) { Console.WriteLine(value); notify(value); } }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Send": [
+        "ImplicitOutput",
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "csharp",
+    "id": "spread",
+    "semantic": "spread",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static void Leaf(int value) { Console.WriteLine(value); } static void Wrapper(int value) { Leaf(value); } }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "Leaf": [
+        "ImplicitOutput"
+      ],
+      "Wrapper": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "csharp",
+    "id": "factory",
+    "semantic": "factory",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static Action Build() => () => Console.WriteLine(1); }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "Build"
+    ]
+  },
+  {
+    "language": "rust",
+    "id": "pure_helper",
+    "semantic": "pure helper",
+    "source": "fn leaf(value: i32) -> i32 { value + 1 }\nfn wrapper(value: i32) -> i32 { leaf(value) }\n",
+    "suffix": ".rs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "rust",
+    "id": "recursive_calculation",
+    "semantic": "recursive calculation",
+    "source": "fn loop_value(value: i32) -> i32 { if value <= 0 { 0 } else { loop_value(value - 1) } }\n",
+    "suffix": ".rs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "value_assumptions": [
+      "Numeric operands are exact language-native numeric values.",
+      "Container examples use ordinary built-in containers of the declared scalar values, without custom iteration or getters.",
+      "Captured scalar values remain unchanged."
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "rust",
+    "id": "unknown_spread",
+    "semantic": "unknown spread",
+    "source": "fn leaf(value: i32, notify: fn(i32) -> i32) -> i32 { notify(value) }\nfn wrapper(value: i32, notify: fn(i32) -> i32) -> i32 { leaf(value, notify) }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "UnknownEffect": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "leaf": [
+        "UnknownEffect"
+      ],
+      "wrapper": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "rust",
+    "id": "shadowed_callable",
+    "semantic": "shadowed callable",
+    "source": "fn helper(value: i32) -> i32 { value + 1 }\nfn send(value: i32, helper: fn(i32) -> i32) -> i32 { helper(value) }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "rust",
+    "id": "action_and_unknown",
+    "semantic": "action and unknown",
+    "source": "fn send(value: i32, notify: fn(i32)) { println!(\"{}\", value); notify(value); }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "send": [
+        "ImplicitOutput",
+        "UnknownEffect"
+      ]
+    }
+  },
+  {
+    "language": "rust",
+    "id": "spread",
+    "semantic": "spread",
+    "source": "fn leaf(value: i32) { println!(\"{}\", value); }\nfn wrapper(value: i32) { leaf(value); }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "leaf": [
+        "ImplicitOutput"
+      ],
+      "wrapper": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "rust",
+    "id": "factory",
+    "semantic": "factory",
+    "source": "fn build() -> impl Fn() { || println!(\"{}\", 1) }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "build"
+    ]
+  },
+  {
+    "language": "python",
+    "id": "mutual_actions",
+    "semantic": "Known effects propagate through a recursive cycle without an infinite analysis loop.",
+    "source": "def first(value):\n    second(value)\ndef second(value):\n    print(value)\n    first(value)\n",
+    "suffix": ".py",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "first": [
+        "ImplicitOutput"
+      ],
+      "second": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "typescript",
+    "id": "mutual_actions",
+    "semantic": "Known effects propagate through a recursive cycle without an infinite analysis loop.",
+    "source": "function first(value: number) { second(value); }\nfunction second(value: number) { console.log(value); first(value); }\n",
+    "suffix": ".ts",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "first": [
+        "ImplicitOutput"
+      ],
+      "second": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "go",
+    "id": "mutual_actions",
+    "semantic": "Known effects propagate through a recursive cycle without an infinite analysis loop.",
+    "source": "package probe\nimport \"fmt\"\nfunc First(value int) { Second(value) }\nfunc Second(value int) { fmt.Println(value); First(value) }\n",
+    "suffix": ".go",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "First": [
+        "ImplicitOutput"
+      ],
+      "Second": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "fsharp",
+    "id": "mutual_actions",
+    "semantic": "Known effects propagate through a recursive cycle without an infinite analysis loop.",
+    "source": "module Probe\nlet rec first value = second value\nand second value = printfn \"%d\" value; first value\n",
+    "suffix": ".fs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "first": [
+        "ImplicitOutput"
+      ],
+      "second": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "csharp",
+    "id": "mutual_actions",
+    "semantic": "Known effects propagate through a recursive cycle without an infinite analysis loop.",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static void First(int value) { Second(value); } static void Second(int value) { Console.WriteLine(value); First(value); } }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "First": [
+        "ImplicitOutput"
+      ],
+      "Second": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "rust",
+    "id": "mutual_actions",
+    "semantic": "Known effects propagate through a recursive cycle without an infinite analysis loop.",
+    "source": "fn first(value: i32) { second(value); }\nfn second(value: i32) { println!(\"{}\", value); first(value); }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    },
+    "binding_assumptions": [
+      "The standard-library bindings retain their documented semantics.",
+      "Only the supplied source and documented trusted library effects are analyzed."
+    ],
+    "outcomes": {
+      "first": [
+        "ImplicitOutput"
+      ],
+      "second": [
+        "ImplicitOutput"
+      ]
+    }
+  },
+  {
+    "language": "python",
+    "id": "private_helper",
+    "semantic": "A parameter-relative mutation is private after the caller substitutes a fresh allocation.",
+    "source": "def leaf(values):\n    values.append(1)\ndef wrapper():\n    next = []\n    leaf(next)\n    return next\n",
+    "suffix": ".py",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "leaf": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "wrapper"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The helper receives ordinary built-in scalar containers."
+    ]
+  },
+  {
+    "language": "python",
+    "id": "returned_alias",
+    "semantic": "A calculation can return an argument alias; later mutation through that returned alias changes caller storage.",
+    "source": "def alias(values):\n    return values\ndef change(values):\n    alias(values).append(1)\n",
+    "suffix": ".py",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "alias"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The argument is an ordinary built-in scalar container."
+    ]
+  },
+  {
+    "language": "typescript",
+    "id": "private_helper",
+    "semantic": "A parameter-relative mutation is private after the caller substitutes a fresh allocation.",
+    "source": "function leaf(values: number[]) { values.push(1); }\nfunction wrapper() { const next: number[] = []; leaf(next); return next; }\n",
+    "suffix": ".ts",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "leaf": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "wrapper"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The helper receives ordinary built-in scalar containers."
+    ]
+  },
+  {
+    "language": "typescript",
+    "id": "returned_alias",
+    "semantic": "A calculation can return an argument alias; later mutation through that returned alias changes caller storage.",
+    "source": "function alias(values: number[]) { return values; }\nfunction change(values: number[]) { alias(values).push(1); }\n",
+    "suffix": ".ts",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "alias"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The argument is an ordinary built-in scalar container."
+    ]
+  },
+  {
+    "language": "go",
+    "id": "private_helper",
+    "semantic": "A parameter-relative mutation is private after the caller substitutes a fresh allocation.",
+    "source": "package probe\nfunc Leaf(values []int) { values[0] = 1 }\nfunc Wrapper() []int { next := []int{0}; Leaf(next); return next }\n",
+    "suffix": ".go",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Leaf": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "Wrapper"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The helper receives ordinary built-in scalar containers."
+    ]
+  },
+  {
+    "language": "go",
+    "id": "returned_alias",
+    "semantic": "A calculation can return an argument alias; later mutation through that returned alias changes caller storage.",
+    "source": "package probe\nfunc Alias(values []int) []int { return values }\nfunc Change(values []int) { next := Alias(values); next[0] = 1 }\n",
+    "suffix": ".go",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Change": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "Alias"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The argument is an ordinary built-in scalar container."
+    ]
+  },
+  {
+    "language": "fsharp",
+    "id": "private_helper",
+    "semantic": "A parameter-relative mutation is private after the caller substitutes a fresh allocation.",
+    "source": "module Probe\nlet leaf (values: int array) = values.[0] <- 1\nlet wrapper () =\n    let next = [| 0 |]\n    leaf next\n    next\n",
+    "suffix": ".fs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "leaf": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "wrapper"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The helper receives ordinary built-in scalar containers."
+    ]
+  },
+  {
+    "language": "fsharp",
+    "id": "returned_alias",
+    "semantic": "A calculation can return an argument alias; later mutation through that returned alias changes caller storage.",
+    "source": "module Probe\nlet alias (values: int array) = values\nlet change (values: int array) =\n    let next = alias values\n    next.[0] <- 1\n",
+    "suffix": ".fs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "alias"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The argument is an ordinary built-in scalar container."
+    ]
+  },
+  {
+    "language": "csharp",
+    "id": "private_helper",
+    "semantic": "A parameter-relative mutation is private after the caller substitutes a fresh allocation.",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static void Leaf(List<int> values) { values.Add(1); } static List<int> Wrapper() { var next = new List<int>(); Leaf(next); return next; } }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Leaf": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "Wrapper"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The helper receives ordinary built-in scalar containers."
+    ]
+  },
+  {
+    "language": "csharp",
+    "id": "returned_alias",
+    "semantic": "A calculation can return an argument alias; later mutation through that returned alias changes caller storage.",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static List<int> Alias(List<int> values) => values; static void Change(List<int> values) { Alias(values).Add(1); } }\n",
+    "suffix": ".cs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "Change": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "Alias"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The argument is an ordinary built-in scalar container."
+    ]
+  },
+  {
+    "language": "rust",
+    "id": "private_helper",
+    "semantic": "A parameter-relative mutation is private after the caller substitutes a fresh allocation.",
+    "source": "fn leaf(values: &mut Vec<i32>) { values.push(1); }\nfn wrapper() -> Vec<i32> { let mut next = Vec::new(); leaf(&mut next); next }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "leaf": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "wrapper"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The helper receives ordinary built-in scalar containers."
+    ]
+  },
+  {
+    "language": "rust",
+    "id": "returned_alias",
+    "semantic": "A calculation can return an argument alias; later mutation through that returned alias changes caller storage.",
+    "source": "fn alias(values: &mut Vec<i32>) -> &mut Vec<i32> { values }\nfn change(values: &mut Vec<i32>) { alias(values).push(1); }\n",
+    "suffix": ".rs",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "change": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "alias"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The argument is an ordinary built-in scalar container."
+    ]
+  },
+  {
+    "language": "python",
+    "suffix": ".py",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "factory",
+    "semantic": "Returning an action callback does not execute its body.",
+    "source": "def build(value):\n    return lambda: print(value)\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "build"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ]
+  },
+  {
+    "language": "python",
+    "suffix": ".py",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "invoke_factory",
+    "semantic": "Invoking a returned known callback transfers its effects to the invoker, not its factory.",
+    "source": "def build(value):\n    return lambda: print(value)\ndef invoke(value):\n    next = build(value)\n    next()\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ],
+      "invoke": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "build"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    }
+  },
+  {
+    "language": "python",
+    "suffix": ".py",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "fixed_container_capture",
+    "semantic": "A private captured container with no writes or escaping data alias does not depend on timing.",
+    "source": "def build(value):\n    box = [value]\n    return lambda: box[0]\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "python",
+    "suffix": ".py",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "shadowed_standard_binding",
+    "semantic": "A standard-library spelling does not establish standard-library identity.",
+    "source": "def send(value, print):\n    print(value)\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    },
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "python",
+    "suffix": ".py",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "known_callback",
+    "semantic": "An unknown callback parameter is instantiated as a known calculation at a caller that supplies its actual function identity.",
+    "source": "def apply(value, calculate):\n    return calculate(value)\ndef pure(value):\n    return value + 1\ndef wrapper(value):\n    return apply(value, pure)\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "apply": [
+        "UnknownEffect"
+      ]
+    },
+    "quiet_owners": [
+      "pure",
+      "wrapper"
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "typescript",
+    "suffix": ".ts",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "factory",
+    "semantic": "Returning an action callback does not execute its body.",
+    "source": "function build(value: number) { return () => console.log(value); }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "build"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ]
+  },
+  {
+    "language": "typescript",
+    "suffix": ".ts",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "invoke_factory",
+    "semantic": "Invoking a returned known callback transfers its effects to the invoker, not its factory.",
+    "source": "function build(value: number) { return () => console.log(value); }\nfunction invoke(value: number) { const next = build(value); next(); }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ],
+      "invoke": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "build"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    }
+  },
+  {
+    "language": "typescript",
+    "suffix": ".ts",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "fixed_container_capture",
+    "semantic": "A private captured container with no writes or escaping data alias does not depend on timing.",
+    "source": "function build(value: number) { const box = [value]; return () => box[0]; }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "typescript",
+    "suffix": ".ts",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "shadowed_standard_binding",
+    "semantic": "A standard-library spelling does not establish standard-library identity.",
+    "source": "function send(value: number, console: { log(value: number): void }) { console.log(value); }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    },
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "typescript",
+    "suffix": ".ts",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "known_callback",
+    "semantic": "An unknown callback parameter is instantiated as a known calculation at a caller that supplies its actual function identity.",
+    "source": "function apply(value: number, calculate: (value: number) => number) { return calculate(value); }\nfunction pure(value: number) { return value + 1; }\nfunction wrapper(value: number) { return apply(value, pure); }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "apply": [
+        "UnknownEffect"
+      ]
+    },
+    "quiet_owners": [
+      "pure",
+      "wrapper"
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "go",
+    "suffix": ".go",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "invoke_factory",
+    "semantic": "Invoking a returned known callback transfers its effects to the invoker, not its factory.",
+    "source": "package probe\nimport \"fmt\"\nfunc Build(value int) func() { return func() { fmt.Println(value) } }\nfunc Invoke(value int) { next := Build(value); next() }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ],
+      "Invoke": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "Build"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    }
+  },
+  {
+    "language": "go",
+    "suffix": ".go",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "fixed_container_capture",
+    "semantic": "A private captured container with no writes or escaping data alias does not depend on timing.",
+    "source": "package probe\nfunc Build(value int) func() int { box := []int{value}; return func() int { return box[0] } }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "go",
+    "suffix": ".go",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "shadowed_standard_binding",
+    "semantic": "A standard-library spelling does not establish standard-library identity.",
+    "source": "package probe\nfunc Send(value int, println func(int)) { println(value) }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "Send": [
+        "UnknownEffect"
+      ]
+    },
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "go",
+    "suffix": ".go",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "known_callback",
+    "semantic": "An unknown callback parameter is instantiated as a known calculation at a caller that supplies its actual function identity.",
+    "source": "package probe\nfunc Apply(value int, calculate func(int) int) int { return calculate(value) }\nfunc Pure(value int) int { return value + 1 }\nfunc Wrapper(value int) int { return Apply(value, Pure) }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "Apply": [
+        "UnknownEffect"
+      ]
+    },
+    "quiet_owners": [
+      "Pure",
+      "Wrapper"
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "fsharp",
+    "suffix": ".fs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "invoke_factory",
+    "semantic": "Invoking a returned known callback transfers its effects to the invoker, not its factory.",
+    "source": "module Probe\nlet build (value: int) = fun () -> printfn \"%d\" value\nlet invoke value =\n    let next = build value\n    next ()\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ],
+      "invoke": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "build"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    }
+  },
+  {
+    "language": "fsharp",
+    "suffix": ".fs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "fixed_container_capture",
+    "semantic": "A private captured container with no writes or escaping data alias does not depend on timing.",
+    "source": "module Probe\nlet build (value: int) =\n    let box = [| value |]\n    fun () -> box.[0]\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "fsharp",
+    "suffix": ".fs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "shadowed_standard_binding",
+    "semantic": "A standard-library spelling does not establish standard-library identity.",
+    "source": "module Probe\nlet send value (printfn: int -> unit) = printfn value\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    },
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "fsharp",
+    "suffix": ".fs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "known_callback",
+    "semantic": "An unknown callback parameter is instantiated as a known calculation at a caller that supplies its actual function identity.",
+    "source": "module Probe\nlet apply (value: int) calculate = calculate value\nlet pure value = value + 1\nlet wrapper value = apply value pure\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "apply": [
+        "UnknownEffect"
+      ]
+    },
+    "quiet_owners": [
+      "pure",
+      "wrapper"
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "csharp",
+    "suffix": ".cs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "invoke_factory",
+    "semantic": "Invoking a returned known callback transfers its effects to the invoker, not its factory.",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static Func<int, int> Build(int value) => next => { Console.WriteLine(next); return next; }; static int Invoke(int value) { var next = Build(value); return next(value); } }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ],
+      "Invoke": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "Build"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    }
+  },
+  {
+    "language": "csharp",
+    "suffix": ".cs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "fixed_container_capture",
+    "semantic": "A private captured container with no writes or escaping data alias does not depend on timing.",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static Func<int> Build(int value) { var box = new int[] { value }; return () => box[0]; } }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "csharp",
+    "suffix": ".cs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "shadowed_standard_binding",
+    "semantic": "A standard-library spelling does not establish standard-library identity.",
+    "source": "using System; using System.Collections.Generic;\ninterface Logger { void WriteLine(int value); } class Probe { static void Send(int value, Logger Console) { Console.WriteLine(value); } }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "Send": [
+        "UnknownEffect"
+      ]
+    },
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "csharp",
+    "suffix": ".cs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "known_callback",
+    "semantic": "An unknown callback parameter is instantiated as a known calculation at a caller that supplies its actual function identity.",
+    "source": "using System; using System.Collections.Generic;\nclass Probe { static int Apply(int value, Func<int, int> calculate) => calculate(value); static int Pure(int value) => value + 1; static int Wrapper(int value) => Apply(value, Pure); }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "Apply": [
+        "UnknownEffect"
+      ]
+    },
+    "quiet_owners": [
+      "Pure",
+      "Wrapper"
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "rust",
+    "suffix": ".rs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "invoke_factory",
+    "semantic": "Invoking a returned known callback transfers its effects to the invoker, not its factory.",
+    "source": "fn build(value: i32) -> impl Fn() { move || println!(\"{}\", value) }\nfn invoke(value: i32) { let next = build(value); next(); }\n",
+    "exit": 2,
+    "present": [
+      "ImplicitOutput"
+    ],
+    "absent": [
+      "UnknownEffect"
+    ],
+    "outcomes": {
+      "<lambda>": [
+        "ImplicitOutput"
+      ],
+      "invoke": [
+        "ImplicitOutput"
+      ]
+    },
+    "quiet_owners": [
+      "build"
+    ],
+    "allowed_rules": [
+      "ImplicitOutput"
+    ],
+    "minimum_findings": {
+      "ImplicitOutput": 2
+    }
+  },
+  {
+    "language": "rust",
+    "suffix": ".rs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "fixed_container_capture",
+    "semantic": "A private captured container with no writes or escaping data alias does not depend on timing.",
+    "source": "fn build(value: i32) -> impl Fn() -> i32 { let boxed = vec![value]; move || boxed[0] }\n",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": []
+  },
+  {
+    "language": "rust",
+    "suffix": ".rs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "shadowed_standard_binding",
+    "semantic": "A standard-library spelling does not establish standard-library identity.",
+    "source": "macro_rules! println { ($value:expr) => { $value }; }\nfn send(value: i32) { let _ = println!(value); }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "send": [
+        "UnknownEffect"
+      ]
+    },
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "rust",
+    "suffix": ".rs",
+    "binding_assumptions": [
+      "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one."
+    ],
+    "value_assumptions": [
+      "Numeric values and numeric containers use ordinary built-in data, without reflection or custom conversion."
+    ],
+    "id": "known_callback",
+    "semantic": "An unknown callback parameter is instantiated as a known calculation at a caller that supplies its actual function identity.",
+    "source": "fn apply(value: i32, calculate: fn(i32) -> i32) -> i32 { calculate(value) }\nfn pure(value: i32) -> i32 { value + 1 }\nfn wrapper(value: i32) -> i32 { apply(value, pure) }\n",
+    "exit": 2,
+    "present": [
+      "UnknownEffect"
+    ],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput"
+    ],
+    "outcomes": {
+      "apply": [
+        "UnknownEffect"
+      ]
+    },
+    "quiet_owners": [
+      "pure",
+      "wrapper"
+    ],
+    "allowed_rules": [
+      "UnknownEffect"
+    ]
+  },
+  {
+    "language": "python",
+    "id": "dead_action",
+    "semantic": "A literal false branch does not execute the recognized action in its body.",
+    "source": "def calculate(value):\n    if False:\n        print(value)\n    return value\n",
+    "suffix": ".py",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": [],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The value is an exact built-in integer."
+    ]
+  },
+  {
+    "language": "typescript",
+    "id": "dead_action",
+    "semantic": "A literal false branch does not execute the recognized action in its body.",
+    "source": "function calculate(value: number) { if (false) { console.log(value); } return value; }\n",
+    "suffix": ".ts",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": [],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The value is an exact built-in integer."
+    ]
+  },
+  {
+    "language": "go",
+    "id": "dead_action",
+    "semantic": "A literal false branch does not execute the recognized action in its body.",
+    "source": "package probe\nimport \"fmt\"\nfunc Calculate(value int) int { if false { fmt.Println(value) }; return value }\n",
+    "suffix": ".go",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": [],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The value is an exact built-in integer."
+    ]
+  },
+  {
+    "language": "fsharp",
+    "id": "dead_action",
+    "semantic": "A literal false branch does not execute the recognized action in its body.",
+    "source": "module Probe\nlet calculate value =\n    if false then printfn \"%d\" value\n    value\n",
+    "suffix": ".fs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": [],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The value is an exact built-in integer."
+    ]
+  },
+  {
+    "language": "csharp",
+    "id": "dead_action",
+    "semantic": "A literal false branch does not execute the recognized action in its body.",
+    "source": "using System;\nclass Probe { static int Calculate(int value) { if (false) { Console.WriteLine(value); } return value; } }\n",
+    "suffix": ".cs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": [],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The value is an exact built-in integer."
+    ]
+  },
+  {
+    "language": "rust",
+    "id": "dead_action",
+    "semantic": "A literal false branch does not execute the recognized action in its body.",
+    "source": "fn calculate(value: i32) -> i32 { if false { println!(\"{}\", value); } value }\n",
+    "suffix": ".rs",
+    "exit": 0,
+    "present": [],
+    "absent": [
+      "ImplicitInput",
+      "ImplicitOutput",
+      "UnknownEffect"
+    ],
+    "allowed_rules": [],
+    "binding_assumptions": [
+      "Standard library bindings are unchanged."
+    ],
+    "value_assumptions": [
+      "The value is an exact built-in integer."
+    ]
+  }
+]

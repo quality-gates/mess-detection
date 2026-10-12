@@ -18,4 +18,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Run hub contract tests
-        run: python3 tests/hub_contract_test.py
+        run: |
+          python3 tests/hub_contract_test.py
+          python3 -m unittest discover -s tests -p 'test_*.py'
