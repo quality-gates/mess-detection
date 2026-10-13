@@ -20,8 +20,21 @@ from explicitness_observations import RULES, attribution_failures, observations
 LANGUAGES = {"python": ".py", "typescript": ".ts", "go": ".go", "fsharp": ".fs", "csharp": ".cs", "rust": ".rs"}
 CORPUS = Path(__file__).with_name("explicitness_cases.json")
 FIELDS = {"id", "language", "suffix", "source", "exit", "semantic", "binding_assumptions", "value_assumptions",
-          "outcomes", "quiet_owners", "twin_of", "variant_of"}
-REQUIRED = {"id", "language", "suffix", "source", "exit", "binding_assumptions", "outcomes", "quiet_owners"}
+          "outcomes", "quiet_owners", "scopes", "contrasts", "twin_of", "variant_of"}
+REQUIRED = {"id", "language", "suffix", "source", "exit", "semantic", "binding_assumptions", "value_assumptions",
+            "outcomes", "quiet_owners"}
+
+
+def outcome_errors(name: str, outcomes: dict, length: int) -> list[str]:
+    errors = []
+    for owner, rules in outcomes.items():
+        if not isinstance(rules, dict) or not rules or set(rules) - set(RULES):
+            errors.append(f"{name} {owner} needs effect kinds from {list(RULES)}")
+            continue
+        for rule, line in rules.items():
+            if not isinstance(line, int) or isinstance(line, bool) or not 1 <= line <= length:
+                errors.append(f"{name} {owner} {rule} needs one designated effect line inside the source")
+    return errors
 
 
 def corpus_errors(corpus) -> list[str]:
@@ -60,18 +73,24 @@ def corpus_errors(corpus) -> list[str]:
             continue
         if not outcomes and not quiet:
             errors.append(f"{name} declares no callable")
-        for owner, rules in outcomes.items():
-            if not isinstance(rules, dict) or not rules or set(rules) - set(RULES):
-                errors.append(f"{name} {owner} needs effect kinds from {list(RULES)}")
+        errors.extend(outcome_errors(name, outcomes, length))
+        contrasts = case.get("contrasts", {})
+        if not isinstance(contrasts, dict):
+            errors.append(f"{name} contrasts must map a model name to outcomes")
+            contrasts = {}
+        for model, wrong in contrasts.items():
+            if not isinstance(wrong, dict) or wrong == outcomes or set(wrong) - {*outcomes, *quiet}:
+                errors.append(f"{name} contrast {model} must differ from the outcomes and use declared owners")
                 continue
-            for rule, lines in rules.items():
-                if (not isinstance(lines, list) or not lines
-                        or any(not isinstance(line, int) or isinstance(line, bool) or not 1 <= line <= length for line in lines)):
-                    errors.append(f"{name} {owner} {rule} needs effect lines inside the source")
-        if not isinstance(case["binding_assumptions"], list) or not case["binding_assumptions"]:
-            errors.append(f"{name} needs binding assumptions")
-        if case["exit"] == 0 and not case.get("value_assumptions"):
-            errors.append(f"{name} is a calculation without value assumptions")
+            errors.extend(outcome_errors(f"{name} contrast {model}", wrong, length))
+        scopes = case.get("scopes", [])
+        if not isinstance(scopes, list) or not all(isinstance(scope, str) and scope for scope in scopes):
+            errors.append(f"{name} scopes must list scope names")
+        if not isinstance(case["semantic"], str) or not case["semantic"].strip():
+            errors.append(f"{name} needs a semantic explanation")
+        for field in ("binding_assumptions", "value_assumptions"):
+            if not isinstance(case[field], list) or not case[field] or not all(isinstance(item, str) for item in case[field]):
+                errors.append(f"{name} needs {field.replace('_', ' ')}")
     twins = {}
     for (language, identity), case in by_identity.items():
         for link in ("twin_of", "variant_of"):
@@ -106,8 +125,21 @@ def path_mapping(value: str) -> tuple[str, str]:
 def write_atomically(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
-    temporary.write_text(json.dumps(value, indent=2) + "\n")
+    temporary.write_text(json.dumps(value, indent=2, ensure_ascii=True) + "\n")
     temporary.replace(path)
+
+
+def safe(text: str) -> str:
+    """Render native text for a terminal without letting undecodable or surrogate characters end the run."""
+    return text.encode("ascii", "backslashreplace").decode("ascii")
+
+
+def decoded(data: bytes, stream: str, failures: list[str]) -> str:
+    try:
+        return data.decode("utf-8")
+    except UnicodeDecodeError as error:
+        failures.append(f"native {stream} is not UTF-8: {error.reason} at byte {error.start}")
+        return data.decode("utf-8", "backslashreplace")
 
 
 def judge(case: dict, args, command: list[str], root: Path) -> dict:
@@ -118,23 +150,26 @@ def judge(case: dict, args, command: list[str], root: Path) -> dict:
     observation = {"id": case["id"], "fixture": str(path), "failures": [], "records": []}
     try:
         result = subprocess.run([*command, str(path), "json", "explicitness", "--strict"],
-                                capture_output=True, text=True, timeout=args.timeout)
+                                capture_output=True, timeout=args.timeout)
     except (OSError, subprocess.SubprocessError) as error:
         observation["failures"].append(f"native CLI did not complete: {error}")
         return observation
-    observation.update(stdout=result.stdout, stderr=result.stderr, exit=result.returncode)
     failures = observation["failures"]
+    stdout = decoded(result.stdout, "stdout", failures)
+    stderr = decoded(result.stderr, "stderr", failures)
+    observation.update(stdout=stdout, stderr=stderr, exit=result.returncode)
     if result.returncode != case["exit"]:
         failures.append(f"exit {result.returncode}, expected {case['exit']}")
-    if result.stderr:
-        failures.append(f"stderr {result.stderr.strip()}")
+    if stderr:
+        failures.append(f"stderr {stderr.strip()}")
+    if failures and any(item.startswith("native stdout") for item in failures):
+        return observation
     try:
-        records = observations(args.language, json.loads(result.stdout))
+        records = observations(args.language, json.loads(stdout))
+        observation["records"] = [asdict(record) for record in records]
+        failures.extend(attribution_failures(case, records, path, args.path_map))
     except Exception as error:  # A malformed native report fails this case and never ends the run.
         failures.append(f"invalid native report: {type(error).__name__}: {error}")
-        return observation
-    observation["records"] = [asdict(record) for record in records]
-    failures.extend(attribution_failures(case, records, path, args.path_map))
     return observation
 
 
@@ -169,6 +204,8 @@ def main() -> int:
     results = []
     report = {"language": args.language, "complete": False, "results": results}
     verdicts = {}
+    if args.output:
+        write_atomically(args.output, report)
     with tempfile.TemporaryDirectory(prefix=secrets.token_hex(4), dir=args.fixture_root) as temporary:
         for case in cases:
             observation = judge(case, args, command, Path(temporary))
@@ -179,7 +216,7 @@ def main() -> int:
             results.append(observation)
             print(f"{'FAIL' if observation['failures'] else 'PASS'} {case['id']}", flush=True)
             for failure in observation["failures"]:
-                print(f"  {failure}", flush=True)
+                print(f"  {safe(failure)}", flush=True)
             if args.output:
                 write_atomically(args.output, report)
     report["complete"] = True

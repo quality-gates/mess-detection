@@ -87,8 +87,13 @@ def observations(language: str, payload) -> tuple[Observation, ...]:
                 finding = _object(finding, "A violation")
                 method = _text(finding.get("method") or "", "method", empty=True)
                 function = _text(finding.get("function") or "", "function", empty=True)
+                owner = _text(method or function, "method or function")
+                if language in {"go", "csharp"} and method:
+                    scope = _text(finding.get("class", ""), "class", empty=True)
+                    if scope and not owner.startswith(scope + "."):
+                        owner = scope + "." + owner
                 records.append(Observation(
-                    owner_name(_text(method or function, "method or function")), path,
+                    owner_name(owner), path,
                     _line(finding.get("beginLine"), "beginLine"), _text(finding.get("rule"), "rule"),
                     _text(finding.get("description"), "description"), _suppressed(finding)))
     else:
@@ -98,18 +103,59 @@ def observations(language: str, payload) -> tuple[Observation, ...]:
     return tuple(records)
 
 
-def matches_owner(actual: str, expected: str) -> bool:
-    if expected == "<lambda>":
-        return actual == "<lambda>" or "<lambda@" in actual or actual.endswith(("::<lambda>", ".<lambda>"))
-    return actual == expected or actual.endswith("." + expected) or actual.endswith("::" + expected)
+ROOTS = {"<locals>"}
+LEADING_ROOTS = {"crate", "self", "super"}
 
 
-def declared_owner(actual: str, declared: list[str]) -> str | None:
-    """Map a native owner to exactly one declared callable, preferring an exact spelling."""
-    if actual in declared:
-        return actual
-    candidates = [owner for owner in declared if matches_owner(actual, owner)]
-    return candidates[0] if len(candidates) == 1 else None
+def _segments(name: str) -> list[str]:
+    """Split an owner spelling into scope segments outside angle brackets, normalizing separators."""
+    name = name.replace("::", ".")
+    name = re.sub(r"^\(\*?([^()]+)\)\.", r"\1.", name)  # Go method receivers: (*T).M and (T).M.
+    segments, current, depth = [], "", 0
+    for character in name:
+        if character == "<":
+            depth += 1
+        elif character == ">":
+            depth = max(0, depth - 1)
+        if character == "." and depth == 0:
+            segments.append(current)
+            current = ""
+        else:
+            current += character
+    segments.append(current)
+    return [re.sub(r"^<([A-Za-z]+)@.*>$", r"<\1>", segment) for segment in segments]
+
+
+def owner_segments(actual: str, stem: str = "") -> list[str]:
+    """Normalize a native owner: drop language roots and a leading module named after the fixture file."""
+    segments = [segment for segment in _segments(actual) if segment not in ROOTS]
+    while len(segments) > 1 and (segments[0] in LEADING_ROOTS or (stem and segments[0].lower() == stem.lower())):
+        segments = segments[1:]
+    return segments
+
+
+def declared_owner(actual: str, declared: list[str], scopes=(), stem: str = "") -> str | None:
+    """Map a native owner to exactly one declared callable, or return None when it matches none or several.
+
+    A declared owner may be qualified, such as ``A.run``. A native owner matches it when its trailing segments
+    equal the declared segments and every extra leading qualifier is a declared scope or a segment of a declared
+    owner. An exact spelling wins; otherwise the most specific match wins, and a tie is ambiguous.
+    """
+    segments = owner_segments(actual, stem)
+    allowed = set(scopes) | {segment for owner in declared for segment in _segments(owner)}
+    candidates = []
+    for owner in declared:
+        expected = _segments(owner)
+        if segments == expected:
+            return owner
+        extra = segments[:len(segments) - len(expected)]
+        if len(segments) > len(expected) and segments[len(extra):] == expected and set(extra) <= allowed:
+            candidates.append((len(expected), owner))
+    if not candidates:
+        return None
+    best = max(length for length, _ in candidates)
+    winners = [owner for length, owner in candidates if length == best]
+    return winners[0] if len(winners) == 1 else None
 
 
 def map_path(path: str, mappings: list[tuple[str, str]], cwd: Path) -> Path:
@@ -123,7 +169,7 @@ def map_path(path: str, mappings: list[tuple[str, str]], cwd: Path) -> Path:
 
 def attribution_failures(case: dict, records: tuple[Observation, ...], fixture: Path,
                          mappings: list[tuple[str, str]] = (), cwd: Path | None = None) -> list[str]:
-    """Judge records against the closed set of callables, effect kinds, and effect lines a case declares."""
+    """Judge records against the closed set of callables, effect kinds, and designated effect lines a case declares."""
     failures = []
     outcomes = case["outcomes"]
     declared = [*outcomes, *case["quiet_owners"]]
@@ -131,21 +177,26 @@ def attribution_failures(case: dict, records: tuple[Observation, ...], fixture: 
     fixture = fixture.resolve()
     for record in records:
         where = f"{record.owner} {record.rule} at {record.path}:{record.line}"
-        if map_path(record.path, list(mappings), cwd or Path.cwd()) != fixture:
+        try:
+            inside = map_path(record.path, list(mappings), cwd or Path.cwd()) == fixture
+        except (OSError, ValueError, RuntimeError) as error:
+            failures.append(f"{where} has an unusable path: {type(error).__name__}")
+            inside = True
+        if not inside:
             failures.append(f"{where} is outside the fixture")
-        owner = declared_owner(record.owner, declared)
+        owner = declared_owner(record.owner, declared, case.get("scopes", ()), fixture.stem)
         if owner is None:
             failures.append(f"{where} has an undeclared or ambiguous owner")
         elif owner not in outcomes:
             failures.append(f"{where} is on quiet owner {owner}")
         elif record.rule not in outcomes[owner]:
             failures.append(f"{where} is not an expected effect of {owner} {sorted(outcomes[owner])}")
-        elif record.line not in outcomes[owner][record.rule]:
-            failures.append(f"{where} is not on an effect line {outcomes[owner][record.rule]}")
+        elif record.line != outcomes[owner][record.rule]:
+            failures.append(f"{where} is not on the effect line {outcomes[owner][record.rule]}")
         else:
             seen.add((owner, record.rule))
     for owner, rules in outcomes.items():
-        for rule, lines in rules.items():
+        for rule, line in rules.items():
             if (owner, rule) not in seen:
-                failures.append(f"missing {owner} {rule} at line {' or '.join(map(str, lines))}")
+                failures.append(f"missing {owner} {rule} at line {line}")
     return failures

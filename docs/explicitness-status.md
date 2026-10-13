@@ -60,7 +60,7 @@ Run the corpus against a built native CLI:
 python3 tests/explicitness_conformance.py --language go --command '/absolute/path/to/messgo' --output /tmp/go-explicitness.json
 ```
 
-The runner writes each fixture to a random path and sends `FIXTURE json explicitness --strict`. Use `--cases` for a comma-separated selection, and the runner adds each selected calculation's action twin. The default runs the entire language corpus. Exit 0 means every selected case passed. Exit 1 means at least one case failed, including a case whose native report was malformed. Exit 2 means a usage or corpus error, such as an unknown case id. `--output` is rewritten after every case, and `complete` is `false` until the run finishes.
+The runner writes each fixture to a random path and sends `FIXTURE json explicitness --strict`. Use `--cases` for a comma-separated selection, and the runner adds each selected calculation's action twin. The default runs the entire language corpus. Exit 0 means every selected case passed. Exit 1 means at least one case failed. A malformed native report, output that is not UTF-8, or an unusable path fails only its case, and the run continues. Exit 2 means a usage or corpus error, such as an unknown case id. `--output` is written before the first case and rewritten after every case, and `complete` is `false` until the run finishes.
 
 Python must call the entry point, not merely import `messpy.cli`:
 
@@ -68,4 +68,4 @@ Python must call the entry point, not merely import `messpy.cli`:
 python3 tests/explicitness_conformance.py --language python --command "env PYTHONPATH=/absolute/path/to/messpy/src python3 -c 'from messpy.cli import main; main()'"
 ```
 
-Use Docker adapters for C# and Rust. Their repository instructions still apply. Pass `--path-map /src=HOST_CHECKOUT` for C# and `--path-map /workspace=HOST_CHECKOUT` for Rust, so container paths map back to the host fixture. `.github/workflows/explicitness.yml` is the durable replay. Historical: the first session's logs and adapter scripts were under `/tmp/mess-normand-goal`, which is not durable.
+Use Docker adapters for C# and Rust. Their repository instructions still apply. Pass `--path-map /src=HOST_CHECKOUT` for C# and `--path-map /workspace=HOST_CHECKOUT` for Rust, so container paths map back to the host fixture. `.github/workflows/explicitness.yml` is the durable replay. It obtains its own defining commit from GitHub's job context and rejects a `contract_ref` that is not that commit or a descendant of it. Historical: the first session's logs and adapter scripts were under `/tmp/mess-normand-goal`, which is not durable.

@@ -27,10 +27,12 @@ jobs:
       - name: Validate the contract and repository identity
         env:
           CALLER: ${{ github.repository }}
+          WORKFLOW_CONTEXT: ${{ toJSON(job) }}
         run: |
           python3 - <<'PY'
           import os
           import re
+          import json
           repositories = {
               "python": "quality-gates/messpy",
               "typescript": "quality-gates/messcript",
@@ -41,18 +43,17 @@ jobs:
           }
           assert repositories.get(os.environ["LANGUAGE"]) == os.environ["CALLER"], "Unsupported detector identity"
           assert re.fullmatch(r"[0-9a-f]{40}", os.environ["CONTRACT_REF"]), "Pin the contract to a commit"
+          workflow = json.loads(os.environ["WORKFLOW_CONTEXT"])
+          assert re.fullmatch(r"[0-9a-f]{40}", workflow["workflow_sha"]), "Missing reusable workflow commit"
+          assert workflow["workflow_repository"] == "quality-gates/mess-detection", "Unsupported workflow repository"
+          assert workflow["workflow_file_path"] == ".github/workflows/explicitness.yml", "Unsupported workflow file"
           PY
       - name: Check out the exact detector head
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           path: detector
-      - name: Check out the pinned shared contract
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          repository: quality-gates/mess-detection
-          ref: ${{ inputs.contract_ref }}
-          path: contract
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
@@ -93,7 +94,17 @@ jobs:
               docker exec "$RUST_CONTAINER" cargo build --locked
               ;;
           esac
+      - name: Check out the pinned shared contract after the native build
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: quality-gates/mess-detection
+          ref: ${{ inputs.contract_ref }}
+          path: contract
+          fetch-depth: 0
+          persist-credentials: false
       - name: Exercise the native CLI
+        env:
+          WORKFLOW_CONTEXT: ${{ toJSON(job) }}
         shell: bash
         run: |
           set -euo pipefail
@@ -130,6 +141,12 @@ jobs:
             csharp) mappings=(--path-map "/src=$DETECTOR") ;;
             rust) mappings=(--path-map "/workspace=$DETECTOR") ;;
           esac
+          # The contract must be this workflow's runner or a descendant of it, and unchanged since checkout.
+          workflow_sha="$(python3 -c 'import json, os; print(json.loads(os.environ["WORKFLOW_CONTEXT"])["workflow_sha"])')"
+          git -C contract merge-base --is-ancestor "$workflow_sha" "$CONTRACT_REF"
+          [[ "$(git -C contract rev-parse HEAD)" == "$CONTRACT_REF" ]]
+          git -C contract diff --quiet HEAD
+          [[ -z "$(git -C contract status --porcelain --untracked-files=all)" ]]
           python3 contract/tests/explicitness_conformance.py \
             --language "$LANGUAGE" --command "$command" "${mappings[@]}" \
             --fixture-root "$DETECTOR/.conformance-fixtures" \
