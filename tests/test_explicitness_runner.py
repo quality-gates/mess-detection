@@ -1,5 +1,3 @@
-"""Drive the real runner through its CLI with fake detectors for every adapter branch and failure class."""
-
 from concurrent.futures import ThreadPoolExecutor
 import json
 import hashlib
@@ -25,7 +23,6 @@ RUNNER = TESTS / "explicitness_conformance.py"
 FAKE = TESTS / "explicitness_fake_detector.py"
 LANGUAGES = ("python", "typescript", "go", "fsharp", "csharp", "rust")
 CORPUS = load_corpus()
-# All-Unknown cases whose designated sites a blanket detector hits without marking a quiet owner (D10).
 BLANKET_PASSES = {
     "blanket_definition": {language: set() for language in LANGUAGES},
     "blanket_call": {
@@ -107,7 +104,6 @@ class ExplicitnessRunnerTests(unittest.TestCase):
                 self.assertFalse(any(verdicts(report).values()))
 
     def test_an_oracle_by_source_passes_everything_as_the_contract_discloses(self):
-        # The correct fake looks each fixture up by its exact source text. The public corpus cannot stop that.
         contract = (ROOT / "docs" / "explicitness-contract.md").read_text()
         self.assertIn("looks each fixture up by its exact source", contract)
         for language in LANGUAGES:

@@ -1,5 +1,3 @@
-"""Check the shared corpus: structure, closed-world owners, twins, fixture shape, and required coverage."""
-
 import ast
 import json
 import os
@@ -19,11 +17,8 @@ CASES = json.loads(CORPUS.read_text())
 LANGUAGES = ("python", "typescript", "go", "fsharp", "csharp", "rust")
 STORAGE = ("conditional_copy", "loop_carried_alias", "escaped_allocation", "unknown_cycle", "mutual_recursion", "long_chain")
 SHARED = ("known_callback", "known_effect_callback", "dead_action", "same_short_name")
-# One case per language for a construct the contract names as UnknownEffect unless a native models it (D8).
 UNANALYSED = {"go": "interface_dispatch", "rust": "dyn_callback", "csharp": "event_subscribers", "fsharp": "active_pattern_parameter"}
-# Precise cases the contract defines a rule for (D8).
 PRECISE = {"go": ("value_receiver", "pointer_receiver"), "rust": ("mut_self_method",)}
-# Named declarations a fixture can contain, per language, so that the closed world can be checked.
 DECLARATIONS = {
     "go": [r"^func\s+(?:\([^)]*\)\s*)?(\w+)"],
     "rust": [r"\bfn\s+(\w+)"],

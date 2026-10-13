@@ -17,7 +17,6 @@ from explicitness_shapes import declaration_line, first_call_line, segments
 
 
 CORPUS = Path(__file__).with_name("explicitness_cases.json")
-# The runner reviewer's lexical model: no mutation, alias, or call analysis; only lines holding direct I/O tokens.
 TOKENS = {"python": ["input(", "print(", "open(", "os.", "time.", "random.", "sys."],
           "typescript": ["console.", "process.", "Date", "Math.random", "fetch(", "readFileSync"],
           "go": ["fmt.", "os.", "time.", "rand."],

@@ -1,5 +1,3 @@
-"""Adapt native explicitness reports and judge them against closed-world outcomes."""
-
 from dataclasses import dataclass
 from pathlib import Path
 import re
@@ -113,9 +111,8 @@ LEADING_ROOTS = {"crate", "self", "super"}
 
 
 def _segments(name: str) -> list[str]:
-    """Split an owner spelling into scope segments outside angle brackets, normalizing separators."""
     name = name.replace("::", ".")
-    name = re.sub(r"^\(\*?([^()]+)\)\.", r"\1.", name)  # Go method receivers: (*T).M and (T).M.
+    name = re.sub(r"^\(\*?([^()]+)\)\.", r"\1.", name)
     segments, current, depth = [], "", 0
     for character in name:
         if character == "<":

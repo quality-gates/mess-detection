@@ -55,7 +55,6 @@ def _matches(language: str, name: str, text: str) -> bool:
         return bool(pattern and re.search(pattern, text))
     if not any(re.search(pattern.replace("{name}", re.escape(name)).replace("{{", "{"), text) for pattern in NAMED[language]):
         return False
-    # A C# line ending in a semicolon is a call or field unless it is an expression-bodied member.
     return not (language == "csharp" and text.rstrip().endswith(";") and not re.search(r"\)\s*=>", text)
                 and not re.search(r"\b(?:event|static|readonly|public|private)\b", text))
 

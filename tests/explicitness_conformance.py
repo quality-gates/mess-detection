@@ -168,7 +168,7 @@ def judge(case: dict, args, command: list[str], root: Path) -> dict:
         records = observations(args.language, json.loads(stdout))
         observation["records"] = [asdict(record) for record in records]
         failures.extend(attribution_failures(case, records, path, args.path_map))
-    except Exception as error:  # A malformed native report fails this case and never ends the run.
+    except Exception as error:
         failures.append(f"invalid native report: {type(error).__name__}: {error}")
     return observation
 
