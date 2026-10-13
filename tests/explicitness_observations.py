@@ -91,9 +91,9 @@ def observations(language: str, payload) -> tuple[Observation, ...]:
                 method = _text(finding.get("method") or "", "method", empty=True)
                 function = _text(finding.get("function") or "", "function", empty=True)
                 owner = _text(method or function, "method or function")
-                if language in {"go", "csharp"} and method:
+                if method:
                     scope = _text(finding.get("class", ""), "class", empty=True)
-                    if scope and not owner.startswith(scope + "."):
+                    if scope and not owner.replace("::", ".").startswith(scope.replace("::", ".") + "."):
                         owner = scope + "." + owner
                 records.append(Observation(
                     owner_name(owner), path,

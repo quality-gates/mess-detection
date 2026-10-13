@@ -280,7 +280,7 @@ class ExplicitnessRunnerTests(unittest.TestCase):
                 self.assertEqual(0, result.returncode, verdicts(report))
 
     def test_native_class_and_method_fields_identify_the_execution_owner(self):
-        for language in ("go", "csharp"):
+        for language in ("go", "csharp", "rust"):
             with self.subTest(language=language):
                 result, report, _ = run_fake("split_method", language, ["same_short_name"])
                 self.assertEqual(0, result.returncode, verdicts(report))
