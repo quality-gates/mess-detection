@@ -6435,9 +6435,9 @@
   "id": "lazy_iteration_calculation",
   "language": "fsharp",
   "suffix": ".fs",
-  "source": "module Probe\nlet total (values: int list) =\n    seq {\n        for value in values do\n            yield value\n    }\n    |> Seq.sum\n",
+  "source": "module Probe\nlet build (values: int list) =\n    seq {\n        for value in values do\n            yield value\n    }\nlet total values =\n    let pending = build values\n    Seq.sum pending\n",
   "exit": 0,
-  "semantic": "Summing a pure inline seq is a calculation.",
+  "semantic": "The sequence builder only creates parameter-derived values, and total only enumerates and sums them; both are calculations.",
   "binding_assumptions": [
    "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one.",
    "Only the supplied source and documented trusted library effects are analyzed.",
@@ -6449,8 +6449,9 @@
   ],
   "outcomes": {},
   "quiet_owners": [
-   "total",
-   "<seq>"
+   "build",
+   "<seq>",
+   "total"
   ],
   "scopes": [
    "Probe"
@@ -7946,9 +7947,9 @@
   "id": "lazy_iteration_calculation",
   "language": "csharp",
   "suffix": ".cs",
-  "source": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\nclass Probe\n{\n    static int Total(List<int> values)\n    {\n        var total = 0;\n        var query = values.Select(item =>\n        {\n            return item + 1;\n        });\n        foreach (var value in query)\n        {\n            total += value;\n        }\n        return total;\n    }\n}\n",
+  "source": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\nclass Probe\n{\n    static IEnumerable<int> Build(List<int> values)\n    {\n        return values.Select(item =>\n        {\n            return item + 1;\n        });\n    }\n    static int Total(List<int> values)\n    {\n        var total = 0;\n        var query = Build(values);\n        foreach (var value in query)\n        {\n            total += value;\n        }\n        return total;\n    }\n}\n",
   "exit": 0,
-  "semantic": "A deferred query whose selector has no effect is a calculation.",
+  "semantic": "The builder returns a pure deferred selector, and the caller only enumerates and sums its parameter-derived values; all owners are calculations.",
   "binding_assumptions": [
    "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one.",
    "Only the supplied source and documented trusted library effects are analyzed.",
@@ -7960,8 +7961,9 @@
   ],
   "outcomes": {},
   "quiet_owners": [
-   "Total",
-   "<lambda>"
+   "Build",
+   "<lambda>",
+   "Total"
   ],
   "scopes": [
    "Probe"
@@ -10489,9 +10491,9 @@
   "id": "lazy_calculation",
   "language": "rust",
   "suffix": ".rs",
-  "source": "fn total(values: &[i32]) -> Vec<i32> {\n    let mapped = values.iter().map(|value| {\n        *value + 1\n    });\n    mapped.collect()\n}\n",
+  "source": "fn build(values: &[i32]) -> impl Iterator<Item = i32> + '_ {\n    values.iter().map(|value| {\n        *value + 1\n    })\n}\nfn total(values: &[i32]) -> Vec<i32> {\n    let mapped = build(values);\n    mapped.collect()\n}\n",
   "exit": 0,
-  "semantic": "Mapping a pure closure over a borrowed slice and collecting it is a calculation.",
+  "semantic": "The builder returns a pure map iterator, and total only creates and collects it from its parameter; all owners are calculations.",
   "binding_assumptions": [
    "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one.",
    "Only the supplied source and documented trusted library effects are analyzed.",
@@ -10503,8 +10505,9 @@
   ],
   "outcomes": {},
   "quiet_owners": [
-   "total",
-   "<lambda>"
+   "build",
+   "<lambda>",
+   "total"
   ]
  },
  {
