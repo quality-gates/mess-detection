@@ -1,0 +1,510 @@
+{
+  "goal_met": false,
+  "conformance": {
+    "python": [
+      {
+        "id": "control",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "spread",
+        "failures": [
+          "missing 'wrapper'"
+        ],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-wdkd1z3a/spread.py:2: ImplicitOutput [priority 3] The function leaf() writes the implicit output print. Return it instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "injected",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "uppercase",
+        "failures": [],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-wdkd1z3a/uppercase.py:3: ImplicitInput [priority 3] The function change() reads the implicit input CACHE. Pass it as an argument instead.\n/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-wdkd1z3a/uppercase.py:3: ImplicitOutput [priority 3] The function change() writes the implicit output CACHE. Return it instead.\n/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-wdkd1z3a/uppercase.py:5: ImplicitInput [priority 3] The function read() reads the implicit input CACHE. Pass it as an argument instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "capture",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "alias",
+        "failures": [],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-wdkd1z3a/alias.py:3: ImplicitOutput [priority 3] The function change() writes the implicit output alias. Return it instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "late_rebind",
+        "failures": [],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-wdkd1z3a/late_rebind.py:2: ImplicitOutput [priority 3] The function change() writes the implicit output values. Return it instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "copy",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "direct_mutation",
+        "failures": [],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-wdkd1z3a/direct_mutation.py:2: ImplicitOutput [priority 3] The function change() writes the implicit output values. Return it instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "opaque_call",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "shallow_copy",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'ImplicitOutput'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      }
+    ],
+    "typescript": [
+      {
+        "id": "control",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "spread",
+        "failures": [
+          "missing 'wrapper'"
+        ],
+        "stdout": "/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-46msipzi/spread.ts:1:32: ImplicitOutput [priority 3] The function leaf() uses console, an implicit output. (context: function leaf())\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "injected",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "capture",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "alias",
+        "failures": [],
+        "stdout": "/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-46msipzi/alias.ts:1:59: ImplicitOutput [priority 3] The function change() mutates caller-owned value alias, an implicit output. (context: function change())\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "copy",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "direct_mutation",
+        "failures": [],
+        "stdout": "/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-46msipzi/direct_mutation.ts:1:37: ImplicitOutput [priority 3] The function change() mutates argument values, an implicit output. (context: function change())\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "opaque_call",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "shallow_copy",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'ImplicitOutput'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      }
+    ],
+    "go": [
+      {
+        "id": "control",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "spread",
+        "failures": [
+          "missing 'Wrapper'"
+        ],
+        "stdout": "/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-1f6b_y8d/spread.go:3  ImplicitOutput  The function Leaf() has an implicit output: fmt.Println. Return it instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "injected",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "capture",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "factory",
+        "failures": [],
+        "stdout": "/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-1f6b_y8d/factory.go:3  ImplicitOutput  The function <lambda>() has an implicit output: fmt.Println. Return it instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "alias",
+        "failures": [],
+        "stdout": "/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-1f6b_y8d/alias.go:2  ImplicitOutput  The function Change() has an implicit output: write through parameter alias. Return it instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "copy",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "direct_mutation",
+        "failures": [],
+        "stdout": "/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-1f6b_y8d/direct_mutation.go:2  ImplicitOutput  The function Change() has an implicit output: write through parameter values. Return it instead.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "opaque_call",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "shallow_copy",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'ImplicitOutput'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      }
+    ],
+    "fsharp": [
+      {
+        "id": "control",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "spread",
+        "failures": [
+          "missing 'wrapper'"
+        ],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-szg3g0vz/spread.fs:2:ImplicitOutput: 'leaf' performs ambient output 'printfn' instead of returning data.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "injected",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "capture",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "array_read",
+        "failures": [],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-szg3g0vz/array_read.fs:3:ImplicitOutput: 'change' writes shared value 'items' instead of returning the new value.\n/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-szg3g0vz/array_read.fs:4:ImplicitInput: 'read' reads mutable shared value 'items' instead of taking it as an argument.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "factory",
+        "failures": [],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-szg3g0vz/factory.fs:2:ImplicitOutput: '<lambda>' performs ambient output 'printfn' instead of returning data.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "alias",
+        "failures": [],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-szg3g0vz/alias.fs:4:ImplicitOutput: 'change' mutates argument 'values' instead of returning a new value.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "copy",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "direct_mutation",
+        "failures": [],
+        "stdout": "/private/var/folders/9v/25q4rqd16xl41cf2y18wtnsc0000gn/T/explicitness-conformance-szg3g0vz/direct_mutation.fs:2:ImplicitOutput: 'change' mutates argument 'values' instead of returning a new value.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "opaque_call",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "shallow_copy",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'ImplicitOutput'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      }
+    ],
+    "csharp": [
+      {
+        "id": "control",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "direct_mutation",
+        "failures": [],
+        "stdout": "/fixtures/direct_mutation.cs:1  ImplicitOutput  The method Change() has an implicit output: changes argument 'values'.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "shared_read",
+        "failures": [],
+        "stdout": "/fixtures/shared_read.cs:1  ImplicitInput   The method Change() has an implicit input: reads static member 'Values'.\n/fixtures/shared_read.cs:1  ImplicitInput   The method Read() has an implicit input: reads static member 'Values'.\n/fixtures/shared_read.cs:1  ImplicitOutput  The method Change() has an implicit output: changes the object in static member 'Values'.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "copy",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "injected",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "opaque_call",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "shallow_copy",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'ImplicitOutput'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      }
+    ],
+    "rust": [
+      {
+        "id": "control",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "direct_mutation",
+        "failures": [],
+        "stdout": "/tmp/normand-cases/direct_mutation.rs:1  ImplicitOutput  The function 'change' has an implicit output: it writes through the borrowed parameter 'values'.\n",
+        "stderr": "",
+        "exit": 2
+      },
+      {
+        "id": "capability",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "copy",
+        "failures": [],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "injected",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "opaque_call",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'UnknownEffect'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      },
+      {
+        "id": "shallow_copy",
+        "failures": [
+          "exit 0, expected 2",
+          "missing 'ImplicitOutput'"
+        ],
+        "stdout": "",
+        "stderr": "",
+        "exit": 0
+      }
+    ]
+  },
+  "native_suites": {
+    "python": "377 run, 1 skipped",
+    "typescript": "386 passed",
+    "go": "all packages passed with TMPDIR=/private/tmp/mess-normand-goal/go-test-temp",
+    "fsharp": "227 passed",
+    "csharp": "730 passed in Docker",
+    "rust": "788 passed in capped Docker"
+  },
+  "base_commits": {
+    "quality-gates/mess-detection": "2981ac4e05e49bde263bba83809fe144aceaf625",
+    "quality-gates/messcript": "472f24aa4854285903c38f6f110bba1f7c669d84",
+    "quality-gates/messfsharp": "2f9fee42110ed4181edc3a004af54b57d2f5c393",
+    "quality-gates/messgo": "06f638a56f8fe652473babe99d7a373a31c9d695",
+    "quality-gates/messharp": "fbdd4732eb177a3e579a4dd677e64889f49c11ff",
+    "quality-gates/messpy": "a52069375a5b873c66249a3e7f927f29d40eb8e7",
+    "quality-gates/messrust": "8d5b57394f35075d5159638a63ffe06d164e2877"
+  },
+  "working_files_sha256": {
+    "quality-gates/mess-detection/tests/explicitness_cases.json": "85cb64f8dc1d03982c032df75aaac20543d87655d30d811d8da27d21c07618dc",
+    "quality-gates/mess-detection/tests/explicitness_conformance.py": "019843874edc56a195bc4e2190c3e57b0d6c37d964b4b7c301d9780378459fa1",
+    "quality-gates/messcript/src/analysis/ownership.ts": "1a764aea7add2e736431bd4e9a5bb0f219383508e9e784369180e58e50d10398",
+    "quality-gates/messcript/src/analysis/explicitness.ts": "b90a8d18e6fcf124616af5e2a24d9aa3e99efb4ee036eedd226ecb96337d4b9e",
+    "quality-gates/messcript/test/explicitness.test.mjs": "50090e4d9e50fa98091087d310f745e36c90d7c9025056e2629ac76cf0f226db",
+    "quality-gates/messfsharp/tests/Fixtures/normand-ownership.fs": "af13af6b0f1dd2981f1e2248a4b69c0e331c9f5ec0e195c4b2d26bad178eb017",
+    "quality-gates/messfsharp/src/MessFSharp/Flows.fs": "441b2fb8171a869d1b362f6d4eb3e461a89878682fd198ef55d8c3eed0cc71ea",
+    "quality-gates/messfsharp/tests/MessFSharp.Tests/AnalyzerTests.fs": "afa13f4a6ccd5dfe00fd654f5083f1a2416fa63fe4776ba9261a3122f2a4cac5",
+    "quality-gates/messgo/internal/rules/explicitness/ownership.go": "35738b70913bddc77e4024cc5cdc8bebf50b1a99cd86a3ed7ea0717f5fa522c7",
+    "quality-gates/messgo/internal/cli/explicitness_test.go": "c8e3a8cedf846c51f13544b1d5e6185a214335ff00e20eb448dccae42b561a08",
+    "quality-gates/messgo/internal/rules/explicitness/explicitness.go": "7fa70f0e9fb870f376bfa16220e003828ab962808a2d8e2362bfa92ccda759f3",
+    "quality-gates/messgo/internal/rules/explicitness/visitors.go": "086b3d2a017da1eef5170d1ee0a83880c9d239944089d452a8c178395629004e",
+    "quality-gates/messharp/src/MessSharp/Rules/Explicitness/ArgumentOwnership.cs": "ca3abec2d7d12107d0d44aca4f6dfc85f9da6c7b08d1ddd118bbf00d6c6ea72b",
+    "quality-gates/messharp/src/MessSharp/Rules/Explicitness/StorageTypes.cs": "89b61fca66b1ed1b6613d2451043852f9c2f8d99a71c7117fbd98a0d8deca9ff",
+    "quality-gates/messharp/src/MessSharp/Rules/Explicitness/ClassState.cs": "0500a8f79539dcc7fcc8f8b68aae874ef6d103c64747babce3cb41100d12857d",
+    "quality-gates/messharp/src/MessSharp/Rules/Explicitness/MethodEffects.cs": "b3e51b2eded7143d68e7766492acc26907a0b6c8f4b6a19baf3f89878e905746",
+    "quality-gates/messharp/src/MessSharp/Rules/Explicitness/StateAccessCollector.cs": "23234589e2a794a15d0a354ae3ba3f198e69a1453b5eda6e09c03db89237fd21",
+    "quality-gates/messharp/tests/MessSharp.Tests/ExplicitnessRulesTests.cs": "12d2af0e942b09bc94a4a134d3c38954d2d034cb54e82ae1bdb3ee9d0db1fe77",
+    "quality-gates/messpy/src/messpy/ownership.py": "5e7b7ace520603245e56168520db4a0ebc736263aecbb488d59bbc2fc5a1e955",
+    "quality-gates/messpy/tests/test_explicitness_ownership.py": "9c381d2fcbe0d3603ef22e3edae70320ad26884ee9670718fd570ffe43d76385",
+    "quality-gates/messpy/src/messpy/analyzer.py": "3a02928ac7cce04d418d823db85fe3743a0e6d04884189fa0eaa7e83e3332ffa",
+    "quality-gates/messpy/tests/test_explicitness.py": "86e54f18450437b90f09cd690d285d1d7d84b1c071ecd9a2e98ad0aefc779105",
+    "quality-gates/messpy/tests/test_onion.py": "7b22e3e0704b05ad51e35619ceb6fd930dabdec1e643d7c9fa7c5bdd19498ab8",
+    "quality-gates/messrust/src/analyze/model/build.rs": "db0436d15317a5e49d7b5d6c5a1be9368a3b03a1ec4e6544a1c3269cb5940ad2",
+    "quality-gates/messrust/src/analyze/model/mod.rs": "8cb79697fed92110a1e85ef9e0aa9f8c30500c87acdc5db5a81895186bdb6399",
+    "quality-gates/messrust/src/analyze/rules/explicitness.rs": "9fa4b256592eda6288c598f257dd72f4e35a82580150490bd5238aa41a7998d0",
+    "quality-gates/messrust/tests/explicitness.rs": "f39db46d866044c643c038550b3588ba9bb5b15e0ec7efe5b7d641d2ae44f071"
+  }
+}

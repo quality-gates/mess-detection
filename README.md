@@ -129,6 +129,19 @@ passes coverage and still misses behaviour:
 Use both: mess detectors on every change; mutation scores on a cadence or on
 touched packages when runtime allows.
 
+## Functional explicitness
+
+The shared [explicitness contract](docs/explicitness-contract.md) defines actions,
+calculations within a supported analysis subset, and unknown effects. The
+language tools implement that contract with their own parsers. Necessary
+actions are legitimate. A style finding is not a functional-programming verdict.
+
+The [conformance runner](tests/explicitness_conformance.py) exercises a built
+native CLI with the [shared cases](tests/explicitness_cases.json). Each case
+declares every callable's effects and effect lines, and each calculation is
+paired with an action twin.
+A clean report is not a claim about arbitrary runtime behavior.
+
 ## Maintainers
 
 This repository is documentation only: the org map and pitch for mess
