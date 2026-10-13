@@ -137,8 +137,9 @@ language tools implement that contract with their own parsers. Necessary
 actions are legitimate. A style finding is not a functional-programming verdict.
 
 The [conformance runner](tests/explicitness_conformance.py) exercises a built
-native CLI with the [shared cases](tests/explicitness_cases.json). It checks
-caller propagation, callbacks, aliases, copy ownership, and unknown effects.
+native CLI with the [shared cases](tests/explicitness_cases.json). Each case
+declares every callable's effects and effect lines, and each calculation is
+paired with an action twin.
 A clean report is not a claim about arbitrary runtime behavior.
 
 ## Maintainers

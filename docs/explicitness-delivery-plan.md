@@ -23,7 +23,7 @@ The classification is actions, calculations established within the documented an
 
 ## Data shape and design
 
-Each native analyzer owns a callable summary with parameter-relative reads and writes, ambient effects, unresolved operations, returned storage and callable provenance, and completeness information. Call transfer substitutes actual argument storage and callable identities. It does not copy diagnostic sets. Deferred bodies belong to separate execution owners. The report adapter preserves direct-flow diagnostics and adds `UnknownEffect`.
+Each native analyzer owns a callable summary with parameter-relative reads and writes, ambient effects, unresolved operations, returned storage and callable provenance, and completeness information. Call transfer substitutes actual argument storage and callable identities. It does not copy diagnostic sets. A body whose execution is deferred past its definer's return, such as a returned callback, belongs to its own execution owner. A Go `defer` runs within the enclosing invocation, so the enclosing function owns the deferred call's effects. `docs/explicitness-contract.md` states each lifecycle rule. The report adapter preserves direct-flow diagnostics and adds `UnknownEffect`.
 
 The solver uses finite callable and effect identities, monotone joins, stable equality, and bounded paths or explicit widening. Recursive provenance cannot grow indefinitely. Private argument substitution can remove a parameter mutation at a caller boundary. It cannot erase ambient or unrelated unresolved effects.
 

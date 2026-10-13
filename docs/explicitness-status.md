@@ -1,5 +1,9 @@
 # Explicitness implementation status
 
+## Current acceptance
+
+The current acceptance rules are in `docs/explicitness-contract.md`. The current runner and its exit codes are described under "Replay with the current runner" below. Everything else in this document is historical.
+
 ## Historical checkpoint
 
 This document records the earlier direct-flow checkpoint. Its source hashes, native-suite results, and 33 of 55 case result are historical. The corpus and implementations have since changed. They are not current acceptance evidence. The delivery work is recorded in `docs/explicitness-delivery-plan.md`.
@@ -8,7 +12,7 @@ At this checkpoint, the reliability goal was not met. Six native suites passed, 
 
 The branches are `fix/normand-explicitness`. The changes are uncommitted. No PR, merge, or deployment was made. The documentation hub owns the corpus and runner. It is not an analyzer.
 
-## Verified changes
+## Historical verified changes
 
 | Analyzer | Native suite | Shared cases | Changes |
 | --- | --- | --- | --- |
@@ -23,7 +27,7 @@ Go's first full run failed because a test expected a `/var` temporary path while
 
 Rust's Clippy command completed with warnings. Its formatting check failed on existing formatting. No repository-wide formatting change was made. The temporary Rust container and its development image were removed. Build output used container tmpfs mounts, not the checkout.
 
-## Open correctness gates
+## Historical open correctness gates
 
 1. Known effects do not propagate to callers in plain explicitness. The Python, TypeScript, Go, and F# `spread` cases fail. C# and Rust also need propagation coverage.
 2. All six tools miss injected callback effects and opaque external calls. They need an explicit unknown result and effect-summary propagation. Passing a callback as an argument does not establish that it is pure.
@@ -32,7 +36,7 @@ Rust's Clippy command completed with warnings. Its formatting check failed on ex
 
 The first six implementation units address direct-flow defects. They are not the completed classifier feature. Do not promote them as FP certification.
 
-## Principles applied
+## Historical principles applied
 
 - Foundational Thinking selected native ownership and execution-scope facts before report changes.
 - Laziness Protocol kept the native analyzers instead of adding an external parser and runtime.
@@ -44,9 +48,11 @@ The first six implementation units address direct-flow defects. They are not the
 - Prove It Works kept the failed family gate visible instead of treating green native suites as completion.
 - Never Block on the Human allowed reversible branch and fixture work to proceed without another approval request.
 
-## Evidence and replay
+## Historical evidence
 
-The durable observations are `tests/explicitness-results.json`. They include actual CLI output, failed expectations, base commits, native-suite results, and hashes of the changed source files. The acceptance inputs are `tests/explicitness_cases.json`. The decision trail is `docs/explicitness-decisions.tsv`.
+`tests/explicitness-results.json` holds the historical checkpoint observations for the earlier 55-case corpus. They are not current acceptance evidence. They include actual CLI output, failed expectations, base commits, native-suite results, and hashes of the changed source files. The current acceptance inputs are `tests/explicitness_cases.json`. The decision trail is `docs/explicitness-decisions.tsv`.
+
+## Replay with the current runner
 
 Run the corpus against a built native CLI:
 
@@ -54,7 +60,7 @@ Run the corpus against a built native CLI:
 python3 tests/explicitness_conformance.py --language go --command '/absolute/path/to/messgo' --output /tmp/go-explicitness.json
 ```
 
-The current runner sends a fixture path, `json`, and `explicitness`. Use `--cases` for a comma-separated selection. The default runs the entire language corpus. A nonzero runner exit means that a semantic gate failed.
+The runner writes each fixture to a random path and sends `FIXTURE json explicitness --strict`. Use `--cases` for a comma-separated selection, and the runner adds each selected calculation's action twin. The default runs the entire language corpus. Exit 0 means every selected case passed. Exit 1 means at least one case failed, including a case whose native report was malformed. Exit 2 means a usage or corpus error, such as an unknown case id. `--output` is rewritten after every case, and `complete` is `false` until the run finishes.
 
 Python must call the entry point, not merely import `messpy.cli`:
 
@@ -62,4 +68,4 @@ Python must call the entry point, not merely import `messpy.cli`:
 python3 tests/explicitness_conformance.py --language python --command "env PYTHONPATH=/absolute/path/to/messpy/src python3 -c 'from messpy.cli import main; main()'"
 ```
 
-Use Docker adapters for C# and Rust. Their repository instructions still apply. The working-session logs and adapter scripts are under `/tmp/mess-normand-goal`. Rust replay requires a new capped development container because the verification container was removed.
+Use Docker adapters for C# and Rust. Their repository instructions still apply. Pass `--path-map /src=HOST_CHECKOUT` for C# and `--path-map /workspace=HOST_CHECKOUT` for Rust, so container paths map back to the host fixture. `.github/workflows/explicitness.yml` is the durable replay. Historical: the first session's logs and adapter scripts were under `/tmp/mess-normand-goal`, which is not durable.

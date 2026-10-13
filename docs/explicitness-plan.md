@@ -1,5 +1,7 @@
 # Normand explicitness implementation plan
 
+This plan is historical. Lines marked "Historical" are superseded. The current plan is `docs/explicitness-delivery-plan.md`, and the current acceptance rules are in `docs/explicitness-contract.md`.
+
 ## Workflow
 
 1. Read the Principles section of the poteto-mode skill.
@@ -17,17 +19,17 @@ The documentation hub does not become an analyzer. It owns the contract and the 
 
 The goal is not met until each tool passes the shared corpus through its public analysis entry, its existing tests pass, and unresolved effects cannot masquerade as proven calculations. A blocked build is not a pass. A test that marks every example unknown is not sufficient.
 
-Scope is six native implementations and one documentation repository. The baseline audit reproduced ownership, capture, copy, shared-content, and deferred-execution errors. C# and Rust builds are blocked by Docker image downloads at the start of this run. Runtime dependencies and report compatibility are constraints.
+Scope is six native implementations and one documentation repository. The baseline audit reproduced ownership, capture, copy, shared-content, and deferred-execution errors. Historical: C# and Rust builds were blocked by Docker image downloads at the start of the first run. Both have since built in their containers. Runtime dependencies and report compatibility are constraints.
 
 ## Design alternatives
 
 Candidate A keeps effect classification native. Each analyzer owns execution scope, storage ownership, and effect summaries. Shared tests establish the language-independent contract. The CLI keeps its existing direct-flow diagnostics and gains explicit unresolved-effect information as needed.
 
-Candidate B adds one external cross-language classifier and invokes it from every tool. The engine could centralize classification, but this adds runtime dependencies to standalone tools and creates a second parser and rule engine. It would expose source transport and process failure concerns to native callers.
+Historical, superseded by the comparison in `docs/explicitness-delivery-plan.md`: Candidate B adds one external cross-language classifier and invokes it from every tool. The engine could centralize classification, but this adds runtime dependencies to standalone tools and creates a second parser and rule engine. It would expose source transport and process failure concerns to native callers.
 
-The base is candidate A. Candidate B is rejected because it violates the standalone-tool contract and duplicates parser ownership. Its useful contribution is one shared corpus rather than six independently invented definitions of purity. The design hides ownership and execution-scope analysis inside each existing flow module. It does not add a generic dependency-injection framework.
+Historical, superseded by the comparison in `docs/explicitness-delivery-plan.md`: The base is candidate A. Candidate B is rejected because it violates the standalone-tool contract and duplicates parser ownership. Its useful contribution is one shared corpus rather than six independently invented definitions of purity. The design hides ownership and execution-scope analysis inside each existing flow module. It does not add a generic dependency-injection framework.
 
-No subagent or cross-model tool is available in this harness. The candidates were evaluated sequentially by the parent. This is not independent design review.
+Historical: no subagent or cross-model tool was available in the first run's harness, so the parent evaluated the candidates sequentially. That was not independent design review. An independent design review has since been run, as recorded in `docs/explicitness-delivery-plan.md`.
 
 ## Ordered units
 
