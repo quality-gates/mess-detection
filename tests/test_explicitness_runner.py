@@ -1,3 +1,5 @@
+"""Drive the real runner through its CLI with fake detectors for every adapter branch and failure class."""
+
 import json
 from pathlib import Path
 import shlex
@@ -6,114 +8,159 @@ import sys
 import tempfile
 import unittest
 
-
-RUNNER = Path(__file__).with_name("explicitness_conformance.py")
-
-
-def report(*findings, errors=None):
-    return json.dumps({"files": [{"file": "fixture.go", "violations": list(findings)}], "errors": errors or []})
+from explicitness_conformance import load_corpus
 
 
-def finding(owner, rule="ImplicitOutput", line=2, detail=None):
-    return {"function": owner, "method": "", "beginLine": line, "rule": rule,
-            "description": detail or f"The function {owner} has {rule}."}
+TESTS = Path(__file__).parent
+RUNNER = TESTS / "explicitness_conformance.py"
+FAKE = TESTS / "explicitness_fake_detector.py"
+LANGUAGES = ("python", "typescript", "go", "fsharp", "csharp", "rust")
+CORPUS = load_corpus()
+
+
+def ids(language, predicate=lambda case: True):
+    return [case["id"] for case in CORPUS if case["language"] == language and predicate(case)]
 
 
 class ExplicitnessRunnerTests(unittest.TestCase):
-    def invoke(self, directory, case, output=None, errors="", status=0):
-        native = Path(directory) / "native.py"
-        native.write_text(
-            "import sys\nfrom pathlib import Path\nassert Path(sys.argv[1]).is_file()\n"
-            "assert sys.argv[2:] == ['json', 'explicitness']\n"
-            f"sys.stdout.write({report() if output is None else output!r}.replace('fixture.go', sys.argv[1]))\n"
-            f"sys.stderr.write({errors!r})\nsys.exit({status})\n"
-        )
-        output_path = Path(directory) / "observations.json"
-        command = shlex.join([sys.executable, str(native)])
-        result = subprocess.run(
-            [sys.executable, str(RUNNER), "--language", "go", "--cases", case,
-             "--command", command, "--output", str(output_path),
-             "--fixture-root", str(Path(directory) / "fixtures")],
-            capture_output=True, text=True, timeout=20,
-        )
-        return result, json.loads(output_path.read_text()) if output_path.exists() else None
-
-    def test_calculation_and_unresolved_effect_have_distinct_outcomes(self):
+    def run_fake(self, mode, language, cases=(), mapped=True, command=None):
         with tempfile.TemporaryDirectory() as directory:
-            result, records = self.invoke(directory, "control")
-            self.assertEqual((0, "PASS control\n", ""), (result.returncode, result.stdout, result.stderr))
-            self.assertEqual([], records[0]["failures"])
-            self.assertEqual([], records[0]["records"])
-            result, records = self.invoke(directory, "injected", report(finding("Send", "UnknownEffect")), status=2)
-            self.assertEqual((0, "PASS injected\n", ""), (result.returncode, result.stdout, result.stderr))
-            self.assertEqual([], records[0]["failures"])
-            result, records = self.invoke(directory, "injected")
-            self.assertEqual(1, result.returncode)
-            self.assertIn("exit 0, expected 2", records[0]["failures"])
-            self.assertIn("Send effects [], expected ['UnknownEffect']", records[0]["failures"])
+            root = Path(directory).resolve()
+            output = root / "observations.json"
+            command = command or shlex.join([sys.executable, str(FAKE), mode, language, str(root)])
+            arguments = [sys.executable, str(RUNNER), "--language", language, "--command", command,
+                         "--output", str(output), "--fixture-root", str(root / "fixtures")]
+            if cases:
+                arguments += ["--cases", ",".join(cases)]
+            if mapped and language == "csharp":
+                arguments += ["--path-map", f"/src={root}"]
+            if mapped and language == "rust":
+                arguments += ["--path-map", f"/workspace={root}"]
+            result = subprocess.run(arguments, capture_output=True, text=True, timeout=600)
+            report = json.loads(output.read_text()) if output.exists() else None
+        return result, report
 
-    def test_a_caller_name_in_one_finding_does_not_prove_propagation(self):
-        with tempfile.TemporaryDirectory() as directory:
-            result, records = self.invoke(directory, "spread", report(finding("Leaf", detail="Leaf calls Wrapper")), status=2)
-            self.assertEqual(1, result.returncode)
-            self.assertIn("Wrapper effects [], expected ['ImplicitOutput']", records[0]["failures"])
-            self.assertIn("ImplicitOutput owners 1, expected at least 2", records[0]["failures"])
-            result, records = self.invoke(directory, "spread", report(finding("Leaf"), finding("Wrapper", line=4)), status=2)
-            self.assertEqual((0, "PASS spread\n", ""), (result.returncode, result.stdout, result.stderr))
+    def verdicts(self, report):
+        return {item["id"]: item["failures"] for item in report["results"]}
 
-    def test_duplicate_records_and_two_caller_records_do_not_prove_a_leaf_effect(self):
-        with tempfile.TemporaryDirectory() as directory:
-            result, records = self.invoke(directory, "spread", report(finding("Wrapper"), finding("Wrapper")), status=2)
-            self.assertEqual(1, result.returncode)
-            self.assertTrue(any("Duplicate findings" in item for item in records[0]["failures"]))
-            result, records = self.invoke(directory, "spread", report(finding("Wrapper"), finding("Wrapper", line=4)), status=2)
-            self.assertEqual(1, result.returncode)
-            self.assertIn("Leaf effects [], expected ['ImplicitOutput']", records[0]["failures"])
+    def test_a_correct_detector_passes_every_case_in_every_adapter_branch(self):
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                result, report = self.run_fake("correct", language)
+                self.assertEqual(("", 0), (result.stderr, result.returncode), result.stdout)
+                self.assertTrue(report["complete"])
+                self.assertEqual(sorted(ids(language)), sorted(self.verdicts(report)))
+                self.assertFalse(any(self.verdicts(report).values()))
 
-    def test_unknown_does_not_fabricate_a_known_action(self):
-        with tempfile.TemporaryDirectory() as directory:
-            output = report(finding("Send", "UnknownEffect"), finding("Send", "ImplicitOutput"))
-            result, records = self.invoke(directory, "injected", output, status=2)
-            self.assertEqual(1, result.returncode)
-            self.assertIn("unexpected effect kinds ['ImplicitOutput']", records[0]["failures"])
+    def test_a_phantom_owner_fails_every_case(self):
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                result, report = self.run_fake("phantom", language)
+                self.assertEqual(1, result.returncode)
+                for identity, failures in self.verdicts(report).items():
+                    self.assertTrue(any("undeclared or ambiguous owner" in item for item in failures), identity)
 
-    def test_factory_metadata_cannot_be_hidden_in_a_callback_message(self):
-        with tempfile.TemporaryDirectory() as directory:
-            result, records = self.invoke(directory, "factory", report(finding("Build", detail="ImplicitOutput in <lambda>")), status=2)
-            self.assertEqual(1, result.returncode)
-            self.assertIn("Build must not own a finding", records[0]["failures"])
-            result, records = self.invoke(directory, "factory", report(finding("<lambda>")), status=2)
-            self.assertEqual(0, result.returncode)
+    def test_a_blanket_unknown_fails_every_case_whose_truth_is_not_blanket(self):
+        def blanket_is_true(case):
+            return not case["quiet_owners"] and all(
+                set(rules) == {"UnknownEffect"} and 1 in rules["UnknownEffect"] for rules in case["outcomes"].values())
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                result, report = self.run_fake("blanket", language)
+                self.assertEqual(1, result.returncode)
+                for case in CORPUS:
+                    if case["language"] == language:
+                        verdict = self.verdicts(report)[case["id"]]
+                        self.assertEqual(not blanket_is_true(case), bool(verdict), case["id"])
+                self.assertTrue(all(self.verdicts(report)[identity] for identity in ids(language, lambda case: case["exit"] == 0)))
+        result, report = self.run_fake("blanket", "python", ["shadowed_callable"])
+        self.assertIn("is on quiet owner helper", "\n".join(self.verdicts(report)["shadowed_callable"]))
 
-    def test_stderr_and_tool_failures_are_not_semantic_passes(self):
-        with tempfile.TemporaryDirectory() as directory:
-            result, records = self.invoke(directory, "control", errors="broken compiler\n", status=1)
-            self.assertEqual(1, result.returncode)
-            self.assertEqual(["exit 1, expected 0", "stderr broken compiler"], records[0]["failures"])
-            result, records = self.invoke(directory, "control", report(errors=[{"message": "parse failed"}]))
-            self.assertEqual(1, result.returncode)
-            self.assertTrue(any("processing errors" in item for item in records[0]["failures"]))
-            result, records = self.invoke(directory, "control", "")
-            self.assertEqual(1, result.returncode)
-            self.assertTrue(any("invalid native report" in item for item in records[0]["failures"]))
+    def test_an_empty_report_fails_every_calculation_through_its_twin(self):
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                calculations = ids(language, lambda case: case["exit"] == 0)
+                result, report = self.run_fake("empty", language, calculations)
+                verdicts = self.verdicts(report)
+                self.assertEqual(1, result.returncode)
+                self.assertEqual(2 * len(calculations), len(verdicts))
+                for identity in calculations:
+                    self.assertTrue(any("did not pass in this run" in item for item in verdicts[identity]), identity)
 
-    def test_wrong_source_locations_do_not_establish_effects(self):
-        with tempfile.TemporaryDirectory() as directory:
-            output = report(finding("Send", "UnknownEffect", line=999))
-            result, records = self.invoke(directory, "injected", output, status=2)
-            self.assertEqual(1, result.returncode)
-            self.assertTrue(any("outside this fixture" in item for item in records[0]["failures"]))
-            output = report(finding("Send", "UnknownEffect", line=2)).replace("fixture.go", "other.go")
-            result, records = self.invoke(directory, "injected", output, status=2)
-            self.assertEqual(1, result.returncode)
-            self.assertTrue(any("outside this fixture" in item for item in records[0]["failures"]))
+    def test_a_fixture_name_oracle_learns_nothing(self):
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                result, report = self.run_fake("oracle", language)
+                self.assertEqual(1, result.returncode)
+                verdicts = self.verdicts(report)
+                for case in CORPUS:
+                    if case["language"] == language:
+                        self.assertTrue(verdicts[case["id"]], case["id"])
+                fixtures = [Path(item["fixture"]) for item in report["results"]]
+                self.assertFalse(any(path.stem in verdicts or path.parent.name in verdicts for path in fixtures))
+                self.assertEqual(len(fixtures), len({path.name for path in fixtures}))
 
-    def test_invalid_selection_never_succeeds(self):
+    def test_a_relocated_path_fails_and_container_paths_need_the_declared_mapping(self):
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                selection = ids(language, lambda case: case["exit"] == 2)[:3]
+                result, report = self.run_fake("wrong_path", language, selection)
+                self.assertEqual(1, result.returncode)
+                for failures in self.verdicts(report).values():
+                    self.assertTrue(any("is outside the fixture" in item for item in failures))
+        for language in ("csharp", "rust"):
+            with self.subTest(language=language, mapping=False):
+                result, report = self.run_fake("correct", language, ids(language, lambda case: case["exit"] == 2)[:3], mapped=False)
+                self.assertEqual(1, result.returncode)
+                self.assertTrue(all(self.verdicts(report).values()))
+
+    def test_a_wrong_effect_line_fails(self):
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                result, report = self.run_fake("wrong_line", language, ["spread"])
+                self.assertEqual(1, result.returncode)
+                self.assertIn("is not on an effect line", "\n".join(self.verdicts(report)["spread"]))
+
+    def test_a_malformed_record_fails_its_case_and_the_run_continues(self):
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                result, report = self.run_fake("malformed", language)
+                self.assertEqual(1, result.returncode)
+                self.assertEqual("", result.stderr)
+                self.assertTrue(report["complete"])
+                self.assertEqual(len(ids(language)), len(report["results"]))
+                for failures in self.verdicts(report).values():
+                    self.assertTrue(any("invalid native report" in item for item in failures))
+
+    def test_a_detector_that_hides_suppressed_findings_fails_the_marker_case(self):
+        for language in ("python", "typescript", "fsharp", "csharp", "rust"):
+            with self.subTest(language=language):
+                self.assertIn("suppression_marker", ids(language))
+                result, report = self.run_fake("hide_suppressed", language, ["suppression_marker"])
+                self.assertEqual(1, result.returncode)
+                self.assertTrue(self.verdicts(report)["suppression_marker"])
+                result, report = self.run_fake("correct", language, ["suppression_marker"])
+                self.assertEqual(0, result.returncode, self.verdicts(report))
+
+    def test_the_output_file_survives_a_crash_part_way_through(self):
         with tempfile.TemporaryDirectory() as directory:
-            result, records = self.invoke(directory, "does_not_exist")
-            self.assertEqual(2, result.returncode)
-            self.assertIsNone(records)
-            self.assertIn("selection does not exist", result.stderr)
+            native = Path(directory) / "native.py"
+            counter = Path(directory) / "count"
+            native.write_text(
+                "import os, subprocess, sys\nfrom pathlib import Path\n"
+                f"counter = Path({str(counter)!r})\n"
+                "count = int(counter.read_text()) if counter.exists() else 0\ncounter.write_text(str(count + 1))\n"
+                "if count == 2:\n    os.kill(os.getppid(), 9)\n"
+                f"sys.exit(subprocess.run([sys.executable, {str(FAKE)!r}, 'correct', 'go', '/', *sys.argv[1:]]).returncode)\n")
+            result, report = self.run_fake("correct", "go", command=shlex.join([sys.executable, str(native)]))
+            self.assertNotEqual(0, result.returncode)
+            self.assertFalse(report["complete"])
+            self.assertEqual(2, len(report["results"]))
+
+    def test_usage_errors_exit_two(self):
+        result, report = self.run_fake("correct", "go", ["no_such_case"])
+        self.assertEqual(2, result.returncode)
+        self.assertIsNone(report)
 
 
 if __name__ == "__main__":

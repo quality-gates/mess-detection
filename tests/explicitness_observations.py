@@ -1,5 +1,11 @@
+"""Adapt native explicitness reports and judge them against closed-world outcomes."""
+
 from dataclasses import dataclass
+from pathlib import Path
 import re
+
+
+RULES = ("ImplicitInput", "ImplicitOutput", "UnknownEffect")
 
 
 @dataclass(frozen=True)
@@ -9,6 +15,7 @@ class Observation:
     line: int
     rule: str
     detail: str
+    suppressed: bool = False
 
 
 def owner_name(context: str) -> str:
@@ -16,40 +23,76 @@ def owner_name(context: str) -> str:
     return "<lambda>" if name == "anonymous" else name
 
 
-def observations(language: str, payload: dict) -> tuple[Observation, ...]:
-    if not isinstance(payload, dict) or payload.get("errors"):
-        raise ValueError("The native JSON report contains processing errors or is not an object.")
+def _object(value, where: str) -> dict:
+    if not isinstance(value, dict):
+        raise ValueError(f"{where} must be a JSON object, not {type(value).__name__}.")
+    return value
+
+
+def _array(value, where: str) -> list:
+    if not isinstance(value, list):
+        raise ValueError(f"{where} must be a JSON array, not {type(value).__name__}.")
+    return value
+
+
+def _text(value, where: str, empty: bool = False) -> str:
+    if not isinstance(value, str) or (not empty and not value):
+        raise ValueError(f"{where} must be a non-empty string.")
+    return value
+
+
+def _line(value, where: str) -> int:
+    if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+        raise ValueError(f"{where} must be a positive integer line.")
+    return value
+
+
+def _suppressed(finding: dict) -> bool:
+    value = finding.get("suppressed", False)
+    if not isinstance(value, bool):
+        raise ValueError("A suppressed marker must be a boolean.")
+    return value
+
+
+def observations(language: str, payload) -> tuple[Observation, ...]:
+    """Return every finding in a native JSON report, or raise ValueError for a malformed report."""
+    payload = _object(payload, "The native report")
+    errors = payload.get("errors", [])
+    if errors:
+        raise ValueError("The native JSON report contains processing errors.")
     records = []
     if language in {"python", "typescript"}:
-        for finding in payload["findings"]:
-            if finding.get("suppressed"):
-                raise ValueError("A suppressed finding cannot establish a classification.")
-            records.append(Observation(owner_name(finding["context"]), finding["path"], finding["line"], finding["ruleName"], finding["message"]))
+        for finding in _array(payload.get("findings"), "findings"):
+            finding = _object(finding, "A finding")
+            records.append(Observation(
+                owner_name(_text(finding.get("context"), "context")), _text(finding.get("path"), "path"),
+                _line(finding.get("line"), "line"), _text(finding.get("ruleName"), "ruleName"),
+                _text(finding.get("message"), "message"), _suppressed(finding)))
     elif language == "fsharp":
-        for finding in payload["violations"]:
-            owner = finding["context"]["member"]
-            subject = re.match(r"^'([^']+)'", finding["description"])
+        for finding in _array(payload.get("violations"), "violations"):
+            finding = _object(finding, "A violation")
+            owner = _text(_object(finding.get("context"), "context").get("member"), "context.member")
+            description = _text(finding.get("description"), "description")
+            subject = re.match(r"^'([^']+)'", description)
             if subject and owner != subject.group(1):
                 raise ValueError("The F# finding context disagrees with its execution owner.")
-            records.append(Observation(owner_name(owner or ""), finding["file"], finding["startLine"], finding["rule"], finding["description"]))
+            records.append(Observation(
+                owner_name(owner), _text(finding.get("file"), "file"), _line(finding.get("startLine"), "startLine"),
+                _text(finding.get("rule"), "rule"), description, _suppressed(finding)))
     elif language in {"go", "csharp", "rust"}:
-        for file in payload["files"]:
-            for finding in file["violations"]:
-                if finding.get("suppressed"):
-                    raise ValueError("A suppressed finding cannot establish a classification.")
-                owner = finding.get("method") or finding.get("function") or ""
-                records.append(Observation(owner_name(owner), file["file"], finding["beginLine"], finding["rule"], finding["description"]))
+        for file in _array(payload.get("files"), "files"):
+            file = _object(file, "A file report")
+            path = _text(file.get("file"), "file")
+            for finding in _array(file.get("violations"), "violations"):
+                finding = _object(finding, "A violation")
+                method = _text(finding.get("method") or "", "method", empty=True)
+                function = _text(finding.get("function") or "", "function", empty=True)
+                records.append(Observation(
+                    owner_name(_text(method or function, "method or function")), path,
+                    _line(finding.get("beginLine"), "beginLine"), _text(finding.get("rule"), "rule"),
+                    _text(finding.get("description"), "description"), _suppressed(finding)))
     else:
         raise ValueError("Unknown native report format.")
-    for record in records:
-        if not isinstance(record.path, str) or not record.path:
-            raise ValueError("Every finding needs a source path.")
-        if not record.owner or not isinstance(record.line, int) or isinstance(record.line, bool) or record.line < 1:
-            raise ValueError("Every finding needs an execution owner and a positive source line.")
-        if not isinstance(record.detail, str) or not record.detail:
-            raise ValueError("Every finding needs effect evidence.")
-        if not isinstance(record.rule, str) or not record.rule:
-            raise ValueError("Every finding needs a rule identity.")
     if len(records) != len(set(records)):
         raise ValueError("Duplicate findings do not prove propagation.")
     return tuple(records)
@@ -61,22 +104,48 @@ def matches_owner(actual: str, expected: str) -> bool:
     return actual == expected or actual.endswith("." + expected) or actual.endswith("::" + expected)
 
 
-def attribution_failures(case: dict, records: tuple[Observation, ...]) -> list[str]:
+def declared_owner(actual: str, declared: list[str]) -> str | None:
+    """Map a native owner to exactly one declared callable, preferring an exact spelling."""
+    if actual in declared:
+        return actual
+    candidates = [owner for owner in declared if matches_owner(actual, owner)]
+    return candidates[0] if len(candidates) == 1 else None
+
+
+def map_path(path: str, mappings: list[tuple[str, str]], cwd: Path) -> Path:
+    for container, host in mappings:
+        if path == container or path.startswith(container.rstrip("/") + "/"):
+            path = host.rstrip("/") + path[len(container.rstrip("/")):]
+            break
+    candidate = Path(path)
+    return (candidate if candidate.is_absolute() else cwd / candidate).resolve()
+
+
+def attribution_failures(case: dict, records: tuple[Observation, ...], fixture: Path,
+                         mappings: list[tuple[str, str]] = (), cwd: Path | None = None) -> list[str]:
+    """Judge records against the closed set of callables, effect kinds, and effect lines a case declares."""
     failures = []
-    for owner, rules in case.get("outcomes", {}).items():
-        found = {record.rule for record in records if matches_owner(record.owner, owner)}
-        if found != set(rules):
-            failures.append(f"{owner} effects {sorted(found)}, expected {sorted(rules)}")
-    for owner in case.get("quiet_owners", []):
-        if any(matches_owner(record.owner, owner) for record in records):
-            failures.append(f"{owner} must not own a finding")
-    allowed = case.get("allowed_rules")
-    if allowed is not None:
-        unexpected = {record.rule for record in records} - set(allowed)
-        if unexpected:
-            failures.append(f"unexpected effect kinds {sorted(unexpected)}")
-    for rule, minimum in case.get("minimum_findings", {}).items():
-        count = len({record.owner for record in records if record.rule == rule})
-        if count < minimum:
-            failures.append(f"{rule} owners {count}, expected at least {minimum}")
+    outcomes = case["outcomes"]
+    declared = [*outcomes, *case["quiet_owners"]]
+    seen = set()
+    fixture = fixture.resolve()
+    for record in records:
+        where = f"{record.owner} {record.rule} at {record.path}:{record.line}"
+        if map_path(record.path, list(mappings), cwd or Path.cwd()) != fixture:
+            failures.append(f"{where} is outside the fixture")
+        owner = declared_owner(record.owner, declared)
+        if owner is None:
+            failures.append(f"{where} has an undeclared or ambiguous owner")
+        elif owner not in outcomes:
+            failures.append(f"{where} is on quiet owner {owner}")
+        elif record.rule not in outcomes[owner]:
+            failures.append(f"{where} is not an expected effect of {owner} {sorted(outcomes[owner])}")
+        elif record.line not in outcomes[owner][record.rule]:
+            failures.append(f"{where} is not on an effect line {outcomes[owner][record.rule]}")
+        else:
+            seen.add((owner, record.rule))
+    for owner, rules in outcomes.items():
+        for rule, lines in rules.items():
+            if (owner, rule) not in seen:
+                failures.append(f"missing {owner} {rule} at line {' or '.join(map(str, lines))}")
     return failures
