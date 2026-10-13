@@ -289,6 +289,11 @@ class ExplicitnessRunnerTests(unittest.TestCase):
                 result, report, _ = run_fake("split_method", language, ["same_short_name"])
                 self.assertEqual(0, result.returncode, verdicts(report))
 
+    def test_native_fsharp_context_fields_identify_the_execution_owner(self):
+        result, report, _ = run_fake("split_context", "fsharp", ["same_short_name"])
+        self.assertEqual(0, result.returncode, verdicts(report))
+        self.assertEqual("Probe.Loud.run", report["results"][0]["records"][0]["owner"])
+
     def test_a_relocated_path_fails_and_container_paths_need_the_declared_mapping(self):
         for language in LANGUAGES:
             with self.subTest(language=language):

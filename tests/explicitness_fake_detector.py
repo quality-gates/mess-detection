@@ -138,6 +138,11 @@ def main() -> int:
             if "." in record["owner"]:
                 scope, method = record["owner"].rsplit(".", 1)
                 finding.update({"class": scope, "method": method, "function": ""})
+    if mode == "split_context":
+        for finding, record in zip(report["violations"], records):
+            scope, _, member = record["owner"].rpartition(".")
+            finding["context"] = {"member": member, "module": scope or None, "type": None, "namespace": "Probe"}
+            finding["description"] = f"'{member}' has {record['rule']}."
     if mode == "malformed":
         report = {"errors": [], "findings": [1]} if language in {"python", "typescript"} else (
             {"errors": [], "violations": ["broken"]} if language == "fsharp" else {"files": [{"file": path, "violations": ["broken"]}]})

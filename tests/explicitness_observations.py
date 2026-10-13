@@ -71,11 +71,16 @@ def observations(language: str, payload) -> tuple[Observation, ...]:
     elif language == "fsharp":
         for finding in _array(payload.get("violations"), "violations"):
             finding = _object(finding, "A violation")
-            owner = _text(_object(finding.get("context"), "context").get("member"), "context.member")
+            context = _object(finding.get("context"), "context")
+            owner = _text(context.get("member"), "context.member")
             description = _text(finding.get("description"), "description")
             subject = re.match(r"^'([^']+)'", description)
             if subject and owner != subject.group(1):
                 raise ValueError("The F# finding context disagrees with its execution owner.")
+            for qualifier in ("type", "module", "namespace"):
+                scope = _text(context.get(qualifier) or "", f"context.{qualifier}", empty=True)
+                if scope and not owner.startswith(scope + "."):
+                    owner = scope + "." + owner
             records.append(Observation(
                 owner_name(owner), _text(finding.get("file"), "file"), _line(finding.get("startLine"), "startLine"),
                 _text(finding.get("rule"), "rule"), description, _suppressed(finding)))
