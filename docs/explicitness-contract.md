@@ -86,19 +86,19 @@ All languages require precise ordinary scalar arithmetic and literal control flo
 | --- | --- | --- |
 | Python | Named generators, generator expressions, iteration and `sum`; cold `async def`, coroutine creation and `await`; deferred and immediately invoked lambdas; defaults, decorators and class-body evaluation | Built-in `input`, `print`, `len`, `list`, `sum`; ordinary list reads, indexing, copying and `append` |
 | TypeScript | `function*`, generator creation and iteration; hot async functions and arrows, invocation and `await`; deferred arrows; default parameters and class static evaluation | `console.log`, `Date.now`, `Promise.resolve`; ordinary array reads, indexing, spread, `slice` and `push` |
-| Go | Go 1.23 range-over-func construction and iteration; function literals, `defer` and `go`; value and pointer receiver methods; package initializers and `init` | Built-in `len`, `max`, `append`, `copy`, `println`; `fmt.Println`, `os.Getenv`, `slices.Clone`, `slices.Sort` |
+| Go | Go 1.23 range-over-func construction and iteration; function literals, `defer` and `go`; package initializers and `init` | Built-in `len`, `max`, `append`, `copy`, `println`; `fmt.Println`, `os.Getenv`, `slices.Clone`, `slices.Sort` |
 | F# | Anonymous `seq`, cold `async`, hot `task` and `lazy` bodies; iteration, `Async.RunSynchronously` and `Force`; lambdas and top-level evaluation; mutable module and record storage | `printfn`, `System.Console.Read`, `System.Console.ReadLine`; `Array.copy`, `Array.set`, `Seq.map`, `Seq.sum`, `Seq.toList`; ordinary array indexing and list construction |
 | C# | Iterator construction and `foreach`; hot async methods, invocation and `await`; delegates and local functions; `Lazy<T>` construction and `Value`; static initialization; direct getter and setter body summaries | `Console.Read`, `Console.WriteLine`; ordinary arrays and `Clone`; `List<T>` construction, reads, `Add`, `Insert`, `Remove`; LINQ `Select` with deferred callback transfer |
 | Rust | Closures and iterator combinators; cold `async fn`, future creation and `.await`; `&mut self` methods; local trusted macro identity | `std::env::var_os`; the trusted macros below; ordinary `Vec`/slice reads, indexing, `new`, `from`, `clone`, `to_vec`, `push`, `extend_from_slice`, `iter`, `map`, `collect`; `RefCell` creation and borrows; atomic `load` and `fetch_add` |
 
 These constructs answer `UnknownEffect` on their owner unless a native documents a precise model of them:
 
-- Go method values, interface dispatch and channels.
+- Go method values, interface dispatch, channels, and receiver reads or caller-visible receiver writes excluded by the non-strict receiver policy.
 - Rust `Drop`, `Deref`, operator overloads, `dyn` dispatch and generic `Fn` parameters. For `Drop`, the unknown effect belongs to the function that binds the value, at the binding line.
 - C# property dispatch, operators and events. A declared accessor's own body has an ordinary summary; opaque dispatch is a separate boundary.
 - F# active patterns.
 
-Each language has at least one case that asserts `UnknownEffect` for such a construct. Go value-receiver and pointer-receiver methods and Rust `&mut self` methods have precise cases.
+Each language has at least one case that asserts `UnknownEffect` for such a construct. Rust `&mut self` methods have precise cases. Go's non-strict ruleset keeps an excluded receiver effect unknown and keeps a receiver-free helper in the same fixture quiet.
 
 ## Macro boundary
 

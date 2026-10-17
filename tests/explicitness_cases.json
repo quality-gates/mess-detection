@@ -3883,35 +3883,9 @@
   "id": "value_receiver",
   "language": "go",
   "suffix": ".go",
-  "source": "package probe\n\ntype Counter struct {\n\tcount int\n}\n\nfunc (c Counter) Bump() int {\n\tc.count++\n\treturn c.count\n}\n",
-  "exit": 0,
-  "semantic": "A value receiver is a copy, so incrementing its field changes no caller storage (D8 precise case).",
-  "binding_assumptions": [
-   "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one.",
-   "Only the supplied source and documented trusted library effects are analyzed.",
-   "No concurrent writer mutates argument storage during a call.",
-   "Go 1.23+ language semantics (including per-iteration loop variables and range-over-func)."
-  ],
-  "value_assumptions": [
-   "Numeric values and containers use ordinary built-in data of the declared scalar types, without reflection, custom conversion, custom iteration, or getters.",
-   "Captured scalar values remain unchanged."
-  ],
-  "outcomes": {},
-  "quiet_owners": [
-   "Bump"
-  ],
-  "scopes": [
-   "probe",
-   "Counter"
-  ]
- },
- {
-  "id": "pointer_receiver",
-  "language": "go",
-  "suffix": ".go",
-  "source": "package probe\n\ntype Counter struct {\n\tcount int\n}\n\nfunc (c *Counter) Bump() int {\n\tc.count++\n\treturn c.count\n}\n",
+  "source": "package probe\n\ntype Counter struct {\n\tcount int\n}\n\nfunc (c Counter) Bump() int {\n\tc.count++\n\treturn c.count\n}\n\nfunc Pure(x int) int { return x + 1 }\n",
   "exit": 2,
-  "semantic": "A pointer receiver reaches the caller's struct, so the increment writes caller storage; reading the field through the receiver is explicit input (D1).",
+  "semantic": "A value-receiver read or copy write is excluded by Go's non-strict receiver policy, so it stays UnknownEffect instead of being certified pure. Pure does not use a receiver.",
   "binding_assumptions": [
    "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one.",
    "Only the supplied source and documented trusted library effects are analyzed.",
@@ -3924,15 +3898,46 @@
   ],
   "outcomes": {
    "Bump": {
-    "ImplicitOutput": 8
+    "UnknownEffect": 8
    }
   },
-  "quiet_owners": [],
+  "quiet_owners": [
+   "Pure"
+  ],
   "scopes": [
    "probe",
    "Counter"
+  ]
+ },
+ {
+  "id": "pointer_receiver",
+  "language": "go",
+  "suffix": ".go",
+  "source": "package probe\n\ntype Counter struct {\n\tcount int\n}\n\nfunc (c *Counter) Bump() int {\n\tc.count++\n\treturn c.count\n}\n\nfunc Pure(x int) int { return x + 1 }\n",
+  "exit": 2,
+  "semantic": "A pointer-receiver read or caller-visible write is excluded by Go's non-strict receiver policy, so it is UnknownEffect rather than ImplicitOutput. Pure does not use a receiver.",
+  "binding_assumptions": [
+   "Standard library bindings retain their documented semantics unless a fixture explicitly shadows one.",
+   "Only the supplied source and documented trusted library effects are analyzed.",
+   "No concurrent writer mutates argument storage during a call.",
+   "Go 1.23+ language semantics (including per-iteration loop variables and range-over-func)."
   ],
-  "twin_of": "value_receiver"
+  "value_assumptions": [
+   "Numeric values and containers use ordinary built-in data of the declared scalar types, without reflection, custom conversion, custom iteration, or getters.",
+   "Captured scalar values remain unchanged."
+  ],
+  "outcomes": {
+   "Bump": {
+    "UnknownEffect": 8
+   }
+  },
+  "quiet_owners": [
+   "Pure"
+  ],
+  "scopes": [
+   "probe",
+   "Counter"
+  ]
  },
  {
   "id": "defer_calculation",
