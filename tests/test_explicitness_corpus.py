@@ -18,7 +18,8 @@ LANGUAGES = ("python", "typescript", "go", "fsharp", "csharp", "rust")
 STORAGE = ("conditional_copy", "loop_carried_alias", "escaped_allocation", "unknown_cycle", "mutual_recursion", "long_chain")
 SHARED = ("known_callback", "known_effect_callback", "dead_action", "same_short_name")
 UNANALYSED = {"go": "interface_dispatch", "rust": "dyn_callback", "csharp": "event_subscribers", "fsharp": "active_pattern_parameter"}
-PRECISE = {"go": ("value_receiver", "pointer_receiver"), "rust": ("mut_self_method",)}
+PRECISE = {"rust": ("mut_self_method",)}
+GO_RECEIVER_POLICY = ("value_receiver", "pointer_receiver")
 DECLARATIONS = {
     "go": [r"^func\s+(?:\([^)]*\)\s*)?(\w+)"],
     "rust": [r"\bfn\s+(\w+)"],
@@ -179,6 +180,10 @@ class ExplicitnessCorpusTests(unittest.TestCase):
         for language, identities in PRECISE.items():
             for identity in identities:
                 self.assertIn(identity, of(language), language)
+        for identity in GO_RECEIVER_POLICY:
+            case = of("go")[identity]
+            self.assertEqual({"Bump": {"UnknownEffect": 8}}, case["outcomes"], identity)
+            self.assertIn("Pure", case["quiet_owners"], identity)
 
     def test_all_unknown_cases_have_a_precision_anchor_where_the_construct_allows_one(self):
         for case in CASES:
