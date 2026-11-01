@@ -52,6 +52,10 @@ The first six implementation units address direct-flow defects. They are not the
 
 `tests/explicitness-results.json` holds the historical checkpoint observations for the earlier 55-case corpus. They are not current acceptance evidence. They include actual CLI output, failed expectations, base commits, native-suite results, and hashes of the changed source files. The current acceptance inputs are `tests/explicitness_cases.json`. The decision trail is `docs/explicitness-decisions.tsv`.
 
+## Exploratory testing
+
+The [2026-11-01 hub report](exploratory-testing/2026-11-01-hub.md) records native Python conformance, runner error handling, and remaining coverage gaps.
+
 ## Replay with the current runner
 
 Run the corpus against a built native CLI:

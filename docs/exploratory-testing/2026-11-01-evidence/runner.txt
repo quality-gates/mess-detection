@@ -1,0 +1,94 @@
+The transcript used CMD="env PYTHONPATH=$PWD/.explore/messpy/src python3 -c 'from messpy.cli import main; main()'".
+$ python3 tests/explicitness_conformance.py --language python --command "$CMD" --fixture-root .explore/fixtures --output .explore/full.json
+PASS control_action
+PASS capture_action
+PASS copy_action
+PASS pure_helper_action
+PASS recursive_calculation_action
+PASS fixed_container_capture_action
+PASS dead_action_action
+PASS generator_calculation_action
+PASS async_calculation_action
+PASS mutual_recursion_action
+PASS copy_variant_action
+PASS pure_helper_variant_action
+PASS control
+PASS spread
+PASS injected
+PASS uppercase
+PASS capture
+PASS alias
+PASS late_rebind
+PASS copy
+PASS direct_mutation
+PASS opaque_call
+PASS shallow_copy
+PASS pure_helper
+PASS recursive_calculation
+PASS unknown_spread
+PASS shadowed_callable
+PASS action_and_unknown
+PASS mutual_actions
+PASS shared_helper
+PASS private_helper
+PASS returned_alias
+PASS factory
+PASS invoke_factory
+PASS fixed_container_capture
+PASS shadowed_standard_binding
+PASS known_callback
+PASS known_effect_callback
+PASS dead_action
+PASS generator
+PASS generator_calculation
+PASS async_await
+PASS async_calculation
+PASS lazy_iteration
+PASS definition_time
+PASS decorator
+PASS class_body
+PASS module_load
+PASS same_short_name
+PASS conditional_copy
+PASS loop_carried_alias
+PASS escaped_allocation
+PASS unknown_cycle
+PASS mutual_recursion
+PASS long_chain
+PASS spread_variant
+PASS copy_variant
+PASS direct_mutation_variant
+PASS injected_variant
+PASS pure_helper_variant
+PASS suppression_marker
+exit=0
+$ selected calculation control
+PASS control_action
+PASS control
+exit=0
+$ selected action twin control_action
+PASS control_action
+exit=0
+$ unknown case
+usage: explicitness_conformance.py [-h]
+                                   --language {csharp,fsharp,go,python,rust,typescript}
+                                   --command COMMAND [--cases CASES]
+                                   [--output OUTPUT]
+                                   [--fixture-root FIXTURE_ROOT]
+                                   [--path-map PATH_MAP] [--timeout TIMEOUT]
+explicitness_conformance.py: error: The case selection does not exist in the corpus for this language.
+exit=2
+$ missing detector
+FAIL control_action
+  native CLI did not complete: [Errno 2] No such file or directory: '/missing-detector'
+FAIL control
+  native CLI did not complete: [Errno 2] No such file or directory: '/missing-detector'
+  action twin control_action did not pass in this run
+exit=1
+$ report persistence and fixture cleanup
+full complete= True results= 61 failures= 0 fixtures_exist= 0
+selected complete= True results= 2 failures= 0 fixtures_exist= 0
+action complete= True results= 1 failures= 0 fixtures_exist= 0
+invalid no report
+missing complete= True results= 2 failures= 2 fixtures_exist= 0
+fixture root entries: []
