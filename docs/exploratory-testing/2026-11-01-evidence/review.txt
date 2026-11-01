@@ -1,0 +1,34 @@
+**Verdict: PASS+NOTES**
+
+The diff is safe to merge. It adds six documentation files, and `git diff --cached --check` shows no whitespace errors. No code or workflows change. The main finding holds up against the runner code and the docs. Two limits are understated: what was cleaned up, and what the evidence files actually show.
+
+**Claims that check out**
+- **Issue #9 is a real bug.** In `tests/explicitness_conformance.py:199`, `shlex.split` runs after argparse with nothing catching a `ValueError`, so the user gets a traceback and exit 1. The timeout option (`:185`) accepts `NaN`. The report is first written at `:207–208`, then `subprocess.run` crashes at `:152`, leaving `complete: false` with no results. Both docs promise exit 2 for usage errors (`docs/explicitness-status.md:67` and `docs/explicitness-contract.md:171`). Issue #9 is open, has the `bug` label, and contains exact reproduction steps.
+- **The leftover report files match the evidence.** `.explore/{full,selected,action,missing,echo}.json` hold 61/0, 2/0, 1/0, 2/2 and 2/2 results/failures, all with `complete: true`. `nan-1.json` and `nan-2.json` have `complete: false` and no results.
+- **Other facts confirmed:**
+  - The corpus has 61 Python cases.
+  - The `messpy` clone is at `10ed191…`.
+  - `tests/hub_contract_test.py` defines 6 tests.
+  - Issue #8 is about fake-detector performance, so it is a different problem.
+  - There is no `needs-triage` label and no `docs/agents/` directory.
+  - The `echo.json` stdout shows `/bin/echo` echoing its arguments back.
+
+**Flags**
+1. **The cleanup claim is overstated** (`docs/exploratory-testing/2026-11-01-hub.md`, line 7: "A registered cleanup script removed temporary files after each shell run"). `.explore/cleanup.sh` only removes `.explore/tmp`. Still in the worktree, untracked:
+   - the `.explore/` folder: the `messpy` clone, seven JSON reports, `issue.md` and an empty `review.txt`
+   - `.explore-resources`, which itself says "Temporary artifacts remain in worktree"
+
+   `.gitignore` covers only `__pycache__/`, so a `git add -A` would pull all of this in. None of it is staged, so the merge is safe, but the hub should say these files remain, or they should be deleted after merge.
+2. **Some claims have no evidence file.**
+   - The hub says `hub_contract_test.py` passed all six tests, but `evidence/unittest.txt` only records the 45-test discover run. A discover run with the `test_*.py` pattern doesn't pick up `hub_contract_test.py`.
+   - The Python, Node and Go versions aren't recorded in any evidence file.
+3. **The evidence can't be replayed exactly.**
+   - `evidence/runner.txt` replaces the command with `<messpy>`, so the "documented `PYTHONPATH` invocation" can't be reconstructed from it.
+   - `evidence/input-replays.txt` has a "malformed native output" section that never shows the `/bin/echo` command.
+4. **One count is wrong.** The hub says "Both output files remained readable," but there were three: full, selected and action.
+5. **Local paths are exposed.** `evidence/input-replays.txt` contains absolute `/home/ubuntu/Code/pstack/...` paths, which reveal the local username and layout. This is minor.
+6. **The decision log was written after the fact.** All timestamps in `2026-11-01-decisions.tsv` are 09:34:14–15Z, after the 09:30–09:31 artifacts. That's minor, but the log isn't a live record.
+
+**Limits that are disclosed properly:** the other five languages and the reusable workflow weren't run, and the TypeScript parser test was skipped.
+
+**What I ran:** I read the diff, the hub, the decision log, all three evidence files and the runner code. I checked the leftover report files with Python, looked at the clone's HEAD, viewed issues #8 and #9 and the label list with `gh`, grepped the docs for the exit-code contract, and counted the corpus cases. I did not re-run the conformance runner or either test suite, so the pass counts are taken from the evidence files, not reproduced. I edited nothing and started no services.
