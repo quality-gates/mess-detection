@@ -7,6 +7,7 @@ also the oracle-by-source attack: the corpus is public, so it passes everything,
 Every other mode is one class of defect, or one wrong model of the semantics, that the runner must catch.
 """
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -95,15 +96,41 @@ def model(mode: str, language: str, case: dict, source: str) -> tuple[list[dict]
     return records, (2 if records else 0)
 
 
+def bucket_path(root: Path, language: str, field: str, value: str) -> Path:
+    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return root / language / field / (digest + ".json")
+
+
+def build_index(corpus: list[dict], root: Path) -> None:
+    buckets = {}
+    for case in corpus:
+        for field in ("source", "id"):
+            path = bucket_path(root, case["language"], field, case[field])
+            buckets.setdefault(path, []).append(case)
+    root.mkdir(parents=True)
+    for path, cases in buckets.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(cases))
+
+
 def main() -> int:
-    mode, language, host_root, fixture = sys.argv[1:5]
-    assert sys.argv[5:] == ["json", "explicitness", "--strict"], sys.argv
+    arguments = sys.argv[1:]
+    index = None
+    if arguments[:1] == ["--index"]:
+        index = Path(arguments[1])
+        if not index.is_dir():
+            raise ValueError("The fake detector index does not exist.")
+        arguments = arguments[2:]
+    mode, language, host_root, fixture = arguments[:4]
+    assert arguments[4:] == ["json", "explicitness", "--strict"], sys.argv
     source = Path(fixture).read_text()
-    corpus = [case for case in json.loads(CORPUS.read_text()) if case["language"] == language]
-    if mode == "oracle":
-        case = next((case for case in corpus if Path(fixture).stem == case["id"]), None)
+    field, value = ("id", Path(fixture).stem) if mode == "oracle" else ("source", source)
+    if index is None:
+        corpus = [case for case in json.loads(CORPUS.read_text()) if case["language"] == language]
     else:
-        case = next((case for case in corpus if case["source"] == source), None)
+        bucket = bucket_path(index, language, field, value)
+        corpus = json.loads(bucket.read_text()) if bucket.exists() else []
+    case = next((case for case in corpus if case[field] == value), None)
     records, status = ([], 0) if case is None or mode == "empty" else model(mode, language, case, source)
     marked = "disable-next-line" in source or "SuppressMessage" in source
     if marked and language in {"python", "typescript", "rust"}:

@@ -12,7 +12,7 @@ import textwrap
 import unittest
 
 from explicitness_conformance import load_corpus
-from explicitness_fake_detector import TOKENS, swapped
+from explicitness_fake_detector import TOKENS, build_index, swapped
 from explicitness_observations import declared_owner
 from explicitness_shapes import declaration_line
 
@@ -21,6 +21,7 @@ TESTS = Path(__file__).parent
 ROOT = TESTS.parent
 RUNNER = TESTS / "explicitness_conformance.py"
 FAKE = TESTS / "explicitness_fake_detector.py"
+FAKE_INDEX = None
 LANGUAGES = ("python", "typescript", "go", "fsharp", "csharp", "rust")
 CORPUS = load_corpus()
 BLANKET_PASSES = {
@@ -48,7 +49,8 @@ def run_fake(mode, language, cases=(), mapped=True, command=None):
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory).resolve()
         output = root / "observations.json"
-        command = command or shlex.join([sys.executable, str(FAKE), mode, language, str(root)])
+        index_args = ["--index", str(FAKE_INDEX)] if FAKE_INDEX is not None else []
+        command = command or shlex.join([sys.executable, str(FAKE), *index_args, mode, language, str(root)])
         arguments = [sys.executable, str(RUNNER), "--language", language, "--command", command,
                      "--output", str(output), "--fixture-root", str(root / "fixtures")]
         if cases:
@@ -84,6 +86,12 @@ class ExplicitnessRunnerTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        global FAKE_INDEX
+        directory = tempfile.TemporaryDirectory()
+        cls.addClassCleanup(directory.cleanup)
+        FAKE_INDEX = Path(directory.name) / "index"
+        cls.addClassCleanup(lambda: globals().__setitem__("FAKE_INDEX", None))
+        build_index(CORPUS, FAKE_INDEX)
         jobs = [(mode, language) for mode in FULL_RUNS for language in LANGUAGES]
         with ThreadPoolExecutor(max_workers=max(2, min(8, os.cpu_count() or 2))) as pool:
             for job, value in zip(jobs, pool.map(lambda job: run_fake(*job), jobs)):
