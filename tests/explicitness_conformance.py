@@ -6,6 +6,7 @@ Exit status: 0 when every selected case passes, 1 when any case fails, and 2 for
 import argparse
 from dataclasses import asdict
 import json
+import math
 import os
 from pathlib import Path
 import secrets
@@ -185,6 +186,14 @@ def main() -> int:
     parser.add_argument("--timeout", type=float, default=120)
     args = parser.parse_args()
     try:
+        command = shlex.split(args.command)
+    except ValueError as error:
+        parser.error(f"Invalid detector command: {error}")
+    if not command:
+        parser.error("The detector command must not be empty.")
+    if not math.isfinite(args.timeout):
+        parser.error("The timeout must be finite.")
+    try:
         corpus = load_corpus()
     except ValueError as error:
         parser.error(str(error))
@@ -196,9 +205,6 @@ def main() -> int:
     twins = {case["twin_of"]: case["id"] for case in by_id.values() if "twin_of" in case}
     ordered = sorted(by_id.values(), key=lambda case: "twin_of" not in case)
     cases = [case for case in ordered if not selected or case["id"] in selected]
-    command = shlex.split(args.command)
-    if not command:
-        parser.error("The detector command must not be empty.")
     if args.fixture_root:
         args.fixture_root.mkdir(parents=True, exist_ok=True)
     results = []
