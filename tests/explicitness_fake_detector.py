@@ -7,12 +7,12 @@ also the oracle-by-source attack: the corpus is public, so it passes everything,
 Every other mode is one class of defect, or one wrong model of the semantics, that the runner must catch.
 """
 
-import hashlib
 import json
 import os
 from pathlib import Path
 import re
 import sys
+import zlib
 
 from explicitness_shapes import declaration_line, first_call_line, segments
 
@@ -97,7 +97,7 @@ def model(mode: str, language: str, case: dict, source: str) -> tuple[list[dict]
 
 
 def bucket_path(root: Path, language: str, field: str, value: str) -> Path:
-    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()
+    digest = f"{zlib.crc32(value.encode('utf-8')):08x}"
     return root / language / field / (digest + ".json")
 
 

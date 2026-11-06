@@ -1,4 +1,3 @@
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -6,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zlib
 
 from explicitness_fake_detector import build_index
 
@@ -48,7 +48,7 @@ class FakeIndexTests(unittest.TestCase):
             fixture = root / "fixture.py"
             fixture.write_text(case["source"])
             expected = self.run_fake(fixture, "correct")
-            digest = hashlib.sha256(case["source"].encode("utf-8")).hexdigest()
+            digest = f"{zlib.crc32(case['source'].encode('utf-8')):08x}"
             bucket = index / "python" / "source" / (digest + ".json")
             decoy = {**case, "source": "different\n", "outcomes": {}}
             duplicate = {**case, "outcomes": {}}
