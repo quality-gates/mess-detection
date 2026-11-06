@@ -64,7 +64,7 @@ Run the corpus against a built native CLI:
 python3 tests/explicitness_conformance.py --language go --command '/absolute/path/to/messgo' --output /tmp/go-explicitness.json
 ```
 
-The runner writes each fixture to a random path and sends `FIXTURE json explicitness --strict`. Use `--cases` for a comma-separated selection, and the runner adds each selected calculation's action twin. The default runs the entire language corpus. Exit 0 means every selected case passed. Exit 1 means at least one case failed. A malformed native report, output that is not UTF-8, or an unusable path fails only its case, and the run continues. Exit 2 means a usage or corpus error, such as an unknown case id. `--output` is written before the first case and rewritten after every case, and `complete` is `false` until the run finishes.
+The runner writes each fixture to a random path and sends `FIXTURE json explicitness --strict`. Use `--cases` for a comma-separated selection, and the runner adds each selected calculation's action twin. The default runs the entire language corpus. `--timeout` sets the per-case timeout in seconds. It must be greater than 0 and at most 86400; the default is 120. Exit 0 means every selected case passed. Exit 1 means at least one case failed. A malformed native report, output that is not UTF-8, or an unusable path fails only its case, and the run continues. Exit 2 means a usage or corpus error, such as an unknown case id. `--output` is written before the first case and rewritten after every case, and `complete` is `false` until the run finishes.
 
 Python must call the entry point, not merely import `messpy.cli`:
 
