@@ -6,7 +6,6 @@ Exit status: 0 when every selected case passes, 1 when any case fails, and 2 for
 import argparse
 from dataclasses import asdict
 import json
-import math
 import os
 from pathlib import Path
 import secrets
@@ -183,7 +182,8 @@ def main() -> int:
     parser.add_argument("--fixture-root", type=Path)
     parser.add_argument("--path-map", type=path_mapping, action="append", default=[],
                         help="Map a container path prefix in native reports back to the host prefix.")
-    parser.add_argument("--timeout", type=float, default=120)
+    parser.add_argument("--timeout", type=float, default=120,
+                        help="Timeout per case in seconds, greater than 0 and at most 86400 (default: 120).")
     args = parser.parse_args()
     try:
         command = shlex.split(args.command)
@@ -191,8 +191,8 @@ def main() -> int:
         parser.error(f"Invalid detector command: {error}")
     if not command:
         parser.error("The detector command must not be empty.")
-    if not math.isfinite(args.timeout):
-        parser.error("The timeout must be finite.")
+    if not 0 < args.timeout <= 86400:
+        parser.error("The timeout must be greater than 0 and at most 86400 seconds.")
     try:
         corpus = load_corpus()
     except ValueError as error:
