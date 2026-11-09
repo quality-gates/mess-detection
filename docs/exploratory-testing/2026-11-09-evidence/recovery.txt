@@ -1,0 +1,53 @@
+Invalid options followed by correction
++ python3 tests/explicitness_conformance.py --language python --command ' --cases control --output /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/invalid.json
+usage: explicitness_conformance.py [-h]
+                                   --language {csharp,fsharp,go,python,rust,typescript}
+                                   --command COMMAND [--cases CASES]
+                                   [--output OUTPUT]
+                                   [--fixture-root FIXTURE_ROOT]
+                                   [--path-map PATH_MAP] [--timeout TIMEOUT]
+explicitness_conformance.py: error: Invalid detector command: No closing quotation
+exit=2
+no report for invalid command
++ python3 tests/explicitness_conformance.py --language python --command /bin/echo --cases control --timeout NaN --output /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/invalid.json
+usage: explicitness_conformance.py [-h]
+                                   --language {csharp,fsharp,go,python,rust,typescript}
+                                   --command COMMAND [--cases CASES]
+                                   [--output OUTPUT]
+                                   [--fixture-root FIXTURE_ROOT]
+                                   [--path-map PATH_MAP] [--timeout TIMEOUT]
+explicitness_conformance.py: error: The timeout must be greater than 0 and at most 86400 seconds.
+exit=2
+no report for invalid timeout
++ python3 tests/explicitness_conformance.py --language python --command env PYTHONPATH=/home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/messpy/src python3 -c 'from messpy.cli import main; main()' --cases control_action --fixture-root /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/fixtures --output /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/corrected.json
+PASS control_action
+exit=0
+complete True ids ['control_action'] failure_counts [0]
+Malformed report followed by corrected detector
++ python3 tests/explicitness_conformance.py --language python --command python3 tests/explicitness_fake_detector.py malformed python /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109 --cases control --fixture-root /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/fixtures --output /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/malformed.json
+FAIL control_action
+  invalid native report: ValueError: A finding must be a JSON object, not int.
+FAIL control
+  invalid native report: ValueError: A finding must be a JSON object, not int.
+  action twin control_action did not pass in this run
+exit=1
+complete True ids ['control_action', 'control'] failure_counts [1, 2]
++ python3 tests/explicitness_conformance.py --language python --command python3 tests/explicitness_fake_detector.py correct python /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109 --cases control --fixture-root /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/fixtures --output /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/correct.json
+PASS control_action
+PASS control
+exit=0
+complete True ids ['control_action', 'control'] failure_counts [0, 0]
+Container-style path mapping with fake C# detector
++ python3 tests/explicitness_conformance.py --language csharp --command python3 tests/explicitness_fake_detector.py correct csharp /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109 --cases control --fixture-root /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/fixtures --output /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/map-absent.json
+FAIL control_action
+  Add ImplicitInput at /src/.explore/scratch/fixtures/e27bc060_uj5myql/650982e06877/f36697680b3e2.cs:8 is outside the fixture
+FAIL control
+  action twin control_action did not pass in this run
+exit=1
+complete True ids ['control_action', 'control'] failure_counts [1, 1]
++ python3 tests/explicitness_conformance.py --language csharp --command python3 tests/explicitness_fake_detector.py correct csharp /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109 --cases control --fixture-root /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/fixtures --path-map /src=/home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109 --output /home/ubuntu/Code/pstack/quality-gates/mess-detection-explore-20261109/.explore/scratch/map-present.json
+PASS control_action
+PASS control
+exit=0
+complete True ids ['control_action', 'control'] failure_counts [0, 0]
+fixture entries after runs: 0

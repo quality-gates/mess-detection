@@ -1,0 +1,18 @@
++ python3 tests/hub_contract_test.py
+test_ai_code_slop_message_is_front_and_center (__main__.HubContractTest.test_ai_code_slop_message_is_front_and_center) ... ok
+test_language_map_lists_org_tools (__main__.HubContractTest.test_language_map_lists_org_tools) ... ok
+test_no_first_person_blog_voice (__main__.HubContractTest.test_no_first_person_blog_voice) ... ok
+test_related_gates_point_at_mutation_family (__main__.HubContractTest.test_related_gates_point_at_mutation_family) ... ok
+test_required_headings_in_order (__main__.HubContractTest.test_required_headings_in_order) ... ok
+test_start_here_has_real_install_commands (__main__.HubContractTest.test_start_here_has_real_install_commands) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.002s
+
+OK
++ python3 -m unittest discover -s tests -p test_*.py
+.............s...................................
+----------------------------------------------------------------------
+Ran 49 tests in 117.630s
+
+OK (skipped=1)
