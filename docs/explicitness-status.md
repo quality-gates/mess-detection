@@ -54,7 +54,7 @@ The first six implementation units address direct-flow defects. They are not the
 
 ## Exploratory testing
 
-The [2026-11-01 hub report](exploratory-testing/2026-11-01-hub.md) records native Python conformance, runner error handling, and remaining coverage gaps.
+The [2026-11-01 hub report](exploratory-testing/2026-11-01-hub.md) records native Python conformance, runner error handling, and remaining coverage gaps. The [2026-11-09 hub report](exploratory-testing/2026-11-09-hub.md) revisits native conformance, error recovery, and path mapping.
 
 ## Replay with the current runner
 

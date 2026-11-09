@@ -1,0 +1,21 @@
++ python3 -m unittest discover -s tests -p test_explicitness_corpus.py -v
+test_all_unknown_cases_have_a_precision_anchor_where_the_construct_allows_one (test_explicitness_corpus.ExplicitnessCorpusTests.test_all_unknown_cases_have_a_precision_anchor_where_the_construct_allows_one) ... ok
+test_every_calculation_has_one_action_twin (test_explicitness_corpus.ExplicitnessCorpusTests.test_every_calculation_has_one_action_twin) ... ok
+test_every_language_covers_storage_convergence_variants_and_suppression (test_explicitness_corpus.ExplicitnessCorpusTests.test_every_language_covers_storage_convergence_variants_and_suppression) ... ok
+test_go_cases_state_the_language_version (test_explicitness_corpus.ExplicitnessCorpusTests.test_go_cases_state_the_language_version) ... ok
+test_go_fixtures_are_gofmt_clean (test_explicitness_corpus.ExplicitnessCorpusTests.test_go_fixtures_are_gofmt_clean) ... ok
+test_known_effect_callbacks_transfer_and_have_a_wrong_model (test_explicitness_corpus.ExplicitnessCorpusTests.test_known_effect_callbacks_transfer_and_have_a_wrong_model) ... ok
+test_lifecycle_cases_have_an_eager_contrast_that_moves_an_effect (test_explicitness_corpus.ExplicitnessCorpusTests.test_lifecycle_cases_have_an_eager_contrast_that_moves_an_effect) ... ok
+test_load_time_code_is_owned_by_the_module (test_explicitness_corpus.ExplicitnessCorpusTests.test_load_time_code_is_owned_by_the_module) ... ok
+test_no_outcome_sits_on_its_owners_declaration_line (test_explicitness_corpus.ExplicitnessCorpusTests.test_no_outcome_sits_on_its_owners_declaration_line) ... ok
+test_python_cases_declare_every_callable_and_put_one_statement_on_a_line (test_explicitness_corpus.ExplicitnessCorpusTests.test_python_cases_declare_every_callable_and_put_one_statement_on_a_line) ... ok
+test_same_short_name_owners_have_different_outcomes (test_explicitness_corpus.ExplicitnessCorpusTests.test_same_short_name_owners_have_different_outcomes) ... ok
+test_the_corpus_is_structurally_valid (test_explicitness_corpus.ExplicitnessCorpusTests.test_the_corpus_is_structurally_valid) ... ok
+test_typescript_go_and_rust_cases_declare_every_callable (test_explicitness_corpus.ExplicitnessCorpusTests.test_typescript_go_and_rust_cases_declare_every_callable) ... ok
+test_typescript_parser_checks_every_callable_and_statement_line (test_explicitness_corpus.ExplicitnessCorpusTests.test_typescript_parser_checks_every_callable_and_statement_line) ... skipped 'Node or the TypeScript compiler module is not installed'
+test_unanalysed_and_precise_dispatch_cases_exist (test_explicitness_corpus.ExplicitnessCorpusTests.test_unanalysed_and_precise_dispatch_cases_exist) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.203s
+
+OK (skipped=1)

@@ -1,0 +1,14 @@
+
+Issue state and labels
+[{"assignees":[{"id":"MDQ6VXNlcjgzNzY5NTM=","login":"jonbaldie","name":"Jonathan Baldie"}],"labels":[{"id":"LA_kwDOT2MI9M8AAAACv_SCOw","name":"bug","description":"Something isn't working","color":"d73a4a"}],"number":12,"state":"CLOSED","title":"Runner crashes on finite timeouts beyond the selector limit","url":"https://github.com/quality-gates/mess-detection/issues/12"},{"assignees":[{"id":"MDQ6VXNlcjgzNzY5NTM=","login":"jonbaldie","name":"Jonathan Baldie"}],"labels":[{"id":"LA_kwDOT2MI9M8AAAACv_SCOw","name":"bug","description":"Something isn't working","color":"d73a4a"}],"number":9,"state":"CLOSED","title":"Runner treats malformed command and non-finite timeout as conformance failures","url":"https://github.com/quality-gates/mess-detection/issues/9"},{"assignees":[{"id":"MDQ6VXNlcjgzNzY5NTM=","login":"jonbaldie","name":"Jonathan Baldie"}],"labels":[],"number":8,"state":"CLOSED","title":"Avoid reloading the entire corpus for every fake-detector invocation","url":"https://github.com/quality-gates/mess-detection/issues/8"}]
+[]
+bug	Something isn't working	#d73a4a
+documentation	Improvements or additions to documentation	#0075ca
+duplicate	This issue or pull request already exists	#cfd3d7
+enhancement	New feature or request	#a2eeef
+good first issue	Good for newcomers	#7057ff
+help wanted	Extra attention is needed	#008672
+invalid	This doesn't seem right	#e4e669
+question	Further information is requested	#d876e3
+wontfix	This will not be worked on	#ffffff
+docs/agents/issue-tracker.md absent
